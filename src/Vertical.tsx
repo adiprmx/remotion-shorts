@@ -884,19 +884,69 @@ export const Vertical: React.FC<VerticalProps> = ({
           <Audio src={staticFile(`audio/voice-${i}.mp3`)} />
         </Sequence>
       ))}
-      {captions.map((cap, i) => (
-        <Sequence key={`p${i}`} from={Math.round(cap.start * fps)}>
-          <Audio src={staticFile('audio/pop.mp3')} volume={0.12} />
-        </Sequence>
-      ))}
-      {/* whoosh tiap ganti caption */}
-      {captions.map((cap, i) =>
-        i === 0 ? null : (
+      {/* SFX BERVARIASI — tiap momen beda suara, nggak monoton */}
+      {captions.map((cap, i) => {
+        // klik teks muncul: giliran 3 varian
+        const clicks = [
+          'audio/sfx/click-soft.mp3',
+          'audio/sfx/click-crisp.mp3',
+          'audio/sfx/notify-pop.mp3',
+        ];
+        return (
+          <Sequence key={`p${i}`} from={Math.round(cap.start * fps)}>
+            <Audio src={staticFile(clicks[i % clicks.length])} volume={0.18} />
+          </Sequence>
+        );
+      })}
+      {/* whoosh ganti caption: giliran 4 varian */}
+      {captions.map((cap, i) => {
+        if (i === 0) {
+          return null;
+        }
+        const whooshes = [
+          'audio/sfx/whoosh-rocket.mp3',
+          'audio/sfx/whoosh-air.mp3',
+          'audio/sfx/whoosh-fast.mp3',
+          'audio/sfx/whoosh-vacuum.mp3',
+        ];
+        return (
           <Sequence
             key={`w${i}`}
-            from={Math.round(cap.start * fps) - Math.round(0.35 * fps)}
+            from={Math.round(cap.start * fps) - Math.round(0.3 * fps)}
           >
-            <Audio src={staticFile('audio/whoosh.mp3')} volume={0.35} />
+            <Audio src={staticFile(whooshes[i % whooshes.length])} volume={0.3} />
+          </Sequence>
+        );
+      })}
+      {/* sweep sinematik tiap 3 caption */}
+      {captions.map((cap, i) => {
+        if (i === 0 || i % 3 !== 0) {
+          return null;
+        }
+        const sweeps = [
+          'audio/sfx/sweep-transition.mp3',
+          'audio/sfx/sweep-cinematic.mp3',
+        ];
+        return (
+          <Sequence
+            key={`sw${i}`}
+            from={Math.round(cap.start * fps) - Math.round(0.5 * fps)}
+          >
+            <Audio
+              src={staticFile(sweeps[(i / 3) % sweeps.length | 0])}
+              volume={0.22}
+            />
+          </Sequence>
+        );
+      })}
+      {/* ding tiap ada kicker */}
+      {captions.map((cap, i) =>
+        !cap.kicker ? null : (
+          <Sequence
+            key={`d${i}`}
+            from={Math.round(cap.start * fps) + Math.round(0.15 * fps)}
+          >
+            <Audio src={staticFile('audio/sfx/notify-ding.mp3')} volume={0.2} />
           </Sequence>
         ),
       )}
