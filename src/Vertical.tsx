@@ -925,20 +925,20 @@ export const Vertical: React.FC<VerticalProps> = ({
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
         const bgMap = [
-          'bg/egg-world.webp', // 0: 4 juta pemain
-          'bg/egg-world.webp', // 1: viral
-          'bg/egg-world.webp', // 2: rilis
-          'bg/phone.webp',     // 3: windah
-          'bg/egg-world.webp', // 4: curi telur
-          'bg/hatching.webp',  // 5: tetasin
-          'bg/coins.webp',     // 6: cuan
-          'bg/egg-world.webp', // 7: awas
-          'bg/speed.webp',     // 8: treadmill
-          'bg/hatching.webp',  // 9: 92% like
-          'bg/phone.webp',     // 10: gratis HP
-          'bg/coins.webp',     // 11: follow
+          'bg/egg-world.mp4', // 0: 4 juta pemain
+          'bg/egg-world.mp4', // 1: viral
+          'bg/egg-world.mp4', // 2: rilis
+          'bg/phone.mp4',     // 3: windah
+          'bg/egg-world.mp4', // 4: curi telur
+          'bg/hatching.mp4',  // 5: tetasin
+          'bg/coins.mp4',     // 6: cuan
+          'bg/egg-world.mp4', // 7: awas
+          'bg/speed.mp4',     // 8: treadmill
+          'bg/hatching.mp4',  // 9: 92% like
+          'bg/phone.mp4',     // 10: gratis HP
+          'bg/coins.mp4',     // 11: follow
         ];
-        const broll = bgMap[i] ?? 'bg/egg-world.webp';
+        const broll = bgMap[i] ?? 'bg/egg-world.mp4';
         const zoom = interpolate(
           frame,
           [startF - fadeF, endF + fadeF],
@@ -955,8 +955,10 @@ export const Vertical: React.FC<VerticalProps> = ({
               overflow: 'hidden',
             }}
           >
-            <img
+            <Video
               src={staticFile(broll)}
+              muted
+              loop
               style={{
                 width: '100%',
                 height: '100%',
