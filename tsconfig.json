@@ -1,0 +1,1 @@
+{"compilerOptions":{"esModuleInterop":true,"forceConsistentCasingInFileNames":true,"jsx":"react-jsx","module":"ESNext","moduleResolution":"node","resolveJsonModule":true,"skipLibCheck":true,"strict":true,"target":"ES2020"},"include":["src","remotion.config.ts"]}
