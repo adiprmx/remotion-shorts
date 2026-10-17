@@ -1,0 +1,28 @@
+name: Render video
+
+on:
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'Nama file MP4 hasil render'
+        required: false
+        default: 'shorts.mp4'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Render with Remotion
+        run: npx remotion render Vertical "${{ inputs.filename }}" --props=src/content.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: ${{ inputs.filename }}
+          retention-days: 7
