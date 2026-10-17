@@ -11,6 +11,7 @@ import {
   Video,
 } from 'remotion';
 import voiceMeta from './voice-meta.json';
+import wordTimings from './word-timings.json';
 
 export type Caption = {
   start: number;
@@ -34,6 +35,8 @@ const DIM = 'rgba(255,255,255,0.30)';
 const CARD = '#14141c';
 
 const voiceDurs: number[] = (voiceMeta as {voice: number[]}).voice ?? [];
+const wordTimes: Record<string, {w: string; s: number; e: number}[]> =
+  wordTimings as Record<string, {w: string; s: number; e: number}[]>;
 
 /* ---------- scene visuals (ganti tiap caption) ---------- */
 
@@ -698,8 +701,21 @@ function KineticLine({
   accent: string;
 }) {
   const words = cap.text.split(' ');
-  const dur = voiceDurs[index] ?? cap.end - cap.start;
   const startF = cap.start * fps;
+  // TIMING KATA ASLI dari faster-whisper — subtitle kompak dengan voice, bukan tebakan
+  const timings = wordTimes[String(index)] ?? [];
+  const getWordWindow = (j: number): [number, number] => {
+    const t = timings[j];
+    if (t) {
+      return [startF + t.s * fps, startF + t.e * fps];
+    }
+    // fallback: bagi rata (kalau timing tidak ada)
+    const dur = voiceDurs[index] ?? cap.end - cap.start;
+    return [
+      startF + (j / words.length) * dur * fps,
+      startF + ((j + 1) / words.length) * dur * fps,
+    ];
+  };
   return (
     <div
       style={{
@@ -711,8 +727,7 @@ function KineticLine({
       }}
     >
       {words.map((w, j) => {
-        const ws = startF + (j / words.length) * dur * fps;
-        const we = startF + ((j + 1) / words.length) * dur * fps;
+        const [ws, we] = getWordWindow(j);
         const isCur = frame >= ws && frame < we;
         const isDone = frame >= we;
         // spring entrance tiap kata muncul
@@ -922,42 +937,25 @@ export const Vertical: React.FC<VerticalProps> = ({
           </div>
         );
       })}
-      {/* dark overlay biar teks kebaca */}
+      {/* dark overlay tipis — b-roll tetap kelihatan */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background:
-            'linear-gradient(rgba(5,5,10,0.74), rgba(5,5,10,0.58) 42%, rgba(5,5,10,0.80))',
+            'linear-gradient(rgba(5,5,10,0.52), rgba(5,5,10,0.38) 42%, rgba(5,5,10,0.62))',
         }}
       />
-      {/* partikel mengambang */}
-      <Particles frame={frame} accent={accent} />
-      {/* radial glow */}
+      {/* radial glow tipis */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background: `radial-gradient(ellipse 95% 55% at 50% ${
             36 + drift * 0.12
-          }%, ${accent}2e, transparent 70%)`,
+          }%, ${accent}14, transparent 70%)`,
         }}
       />
-      {/* grid */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)',
-          backgroundSize: '76px 76px',
-          maskImage:
-            'radial-gradient(ellipse 90% 70% at 50% 45%, black 30%, transparent 75%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 90% 70% at 50% 45%, black 30%, transparent 75%)',
-        }}
-      />
-
       {/* audio layers */}
       {captions.map((cap, i) => (
         <Sequence key={`v${i}`} from={Math.round(cap.start * fps)}>
@@ -1202,7 +1200,16 @@ export const Vertical: React.FC<VerticalProps> = ({
                 {cap.kicker}
               </div>
             ) : null}
-            <div style={{fontSize: 72, fontWeight: 900, lineHeight: 1.32}}>
+            <div
+              style={{
+                fontSize: 76,
+                fontWeight: 900,
+                lineHeight: 1.35,
+                WebkitTextStroke: '2px rgba(0,0,0,0.85)',
+                paintOrder: 'stroke fill',
+                textShadow: '0 4px 18px rgba(0,0,0,0.6)',
+              }}
+            >
               <KineticLine
                 cap={cap}
                 index={i}
