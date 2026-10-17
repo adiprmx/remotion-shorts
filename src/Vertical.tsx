@@ -728,31 +728,22 @@ function KineticLine({
     >
       {words.map((w, j) => {
         const [wsRaw, we] = getWordWindow(j);
-        // KARAOKE LEAD-IN: highlight muncul 80ms SEBELUM suara
         const ws = wsRaw - Math.round(0.08 * fps);
         const isCur = frame >= ws && frame < we;
         const isDone = frame >= we;
-        // pop halus dan clean
-        const pop = spring({
-          frame: Math.max(0, frame - ws),
-          fps,
-          config: {damping: 16, stiffness: 200},
-        });
-        const activeScale = isCur ? 1 + 0.12 * pop : 1;
+        // SUBTITLE ADEM: tanpa pop, tanpa scale — cuma highlight warna yang smooth
         return (
           <span
             key={j}
             style={{
               display: 'inline-block',
-              color: isCur ? '#0a0a0e' : isDone ? '#ffffff' : DIM,
-              transform: `scale(${isCur ? activeScale : 1})`,
-              opacity: isDone || isCur ? 1 : 0.6,
+              color: isCur ? '#0a0a0e' : '#ffffff',
+              opacity: isDone || isCur ? 1 : 0.45,
               background: isCur ? accent : 'transparent',
-              padding: isCur ? '6px 16px' : '6px 2px',
-              margin: isCur ? '0 4px' : '0 0',
-              borderRadius: 16,
-              fontWeight: isCur ? 900 : 800,
-              boxShadow: isCur ? `0 0 24px ${accent}88` : 'none',
+              padding: isCur ? '4px 14px' : '4px 2px',
+              margin: isCur ? '0 3px' : '0 0',
+              borderRadius: 12,
+              fontWeight: 800,
             }}
           >
             {w}
