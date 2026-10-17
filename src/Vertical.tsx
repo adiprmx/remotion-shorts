@@ -727,30 +727,35 @@ function KineticLine({
       }}
     >
       {words.map((w, j) => {
-        const [ws, we] = getWordWindow(j);
+        const [wsRaw, we] = getWordWindow(j);
+        // KARAOKE LEAD-IN: highlight muncul 80ms SEBELUM suara (terasa lebih nempel)
+        const ws = wsRaw - Math.round(0.08 * fps);
         const isCur = frame >= ws && frame < we;
         const isDone = frame >= we;
-        // spring entrance tiap kata muncul
-        const enter = spring({
+        // pop dramatis tiap kata aktif
+        const pop = spring({
           frame: Math.max(0, frame - ws),
           fps,
-          config: {damping: 14, stiffness: 220},
+          config: {damping: 11, stiffness: 280},
         });
-        const rot = interpolate(enter, [0, 1], [-8, 0], {
-          extrapolateRight: 'clamp',
-        });
+        const activeScale = isCur ? 1 + 0.28 * pop : 1;
         return (
           <span
             key={j}
             style={{
               display: 'inline-block',
               color: isCur ? '#0a0a0e' : isDone ? '#ffffff' : DIM,
-              transform: `scale(${isCur ? 1.14 : Math.max(0.4, enter)}) rotate(${rot}deg)`,
-              opacity: enter,
+              transform: `scale(${isCur ? activeScale : 1})`,
+              opacity: isDone || isCur ? 1 : 0.55,
               background: isCur ? accent : 'transparent',
-              padding: isCur ? '6px 18px' : '6px 0',
-              borderRadius: 18,
-              boxShadow: isCur ? `0 0 34px ${accent}66` : 'none',
+              padding: isCur ? '8px 22px' : '8px 4px',
+              margin: isCur ? '0 6px' : '0 0',
+              borderRadius: 20,
+              fontWeight: isCur ? 900 : 800,
+              boxShadow: isCur
+                ? `0 0 44px ${accent}aa, 0 0 12px ${accent}`
+                : 'none',
+              transition: 'none',
             }}
           >
             {w}
