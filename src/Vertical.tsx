@@ -924,7 +924,21 @@ export const Vertical: React.FC<VerticalProps> = ({
           [0, 1, 1, 0],
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
-        const broll = i % 2 === 0 ? 'video/broll2.mp4' : 'video/broll3.mp4';
+        const bgMap = [
+          'bg/egg-world.webp', // 0: 4 juta pemain
+          'bg/egg-world.webp', // 1: viral
+          'bg/egg-world.webp', // 2: rilis
+          'bg/phone.webp',     // 3: windah
+          'bg/egg-world.webp', // 4: curi telur
+          'bg/hatching.webp',  // 5: tetasin
+          'bg/coins.webp',     // 6: cuan
+          'bg/egg-world.webp', // 7: awas
+          'bg/speed.webp',     // 8: treadmill
+          'bg/hatching.webp',  // 9: 92% like
+          'bg/phone.webp',     // 10: gratis HP
+          'bg/coins.webp',     // 11: follow
+        ];
+        const broll = bgMap[i] ?? 'bg/egg-world.webp';
         const zoom = interpolate(
           frame,
           [startF - fadeF, endF + fadeF],
@@ -941,10 +955,8 @@ export const Vertical: React.FC<VerticalProps> = ({
               overflow: 'hidden',
             }}
           >
-            <Video
+            <img
               src={staticFile(broll)}
-              muted
-              startFrom={Math.round((i * 90) % 240)}
               style={{
                 width: '100%',
                 height: '100%',
