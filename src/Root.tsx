@@ -11,7 +11,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="Vertical"
         component={Vertical}
-        durationInFrames={Math.max(30, Math.round(content.durationSec * 30))}
+        durationInFrames={Math.max(30, Math.round(content.durationSec * 60))}
         fps={60}
         width={1080}
         height={1920}
