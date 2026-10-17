@@ -8,6 +8,7 @@ import {
   staticFile,
   useCurrentFrame,
   useVideoConfig,
+  Video,
 } from 'remotion';
 import voiceMeta from './voice-meta.json';
 
@@ -798,6 +799,60 @@ export const Vertical: React.FC<VerticalProps> = ({
 
   return (
     <AbsoluteFill style={{background: BG, fontFamily: FONT, color: '#ffffff'}}>
+      {/* b-roll video backgrounds, ganti tiap caption + Ken Burns */}
+      {captions.map((cap, i) => {
+        const startF = cap.start * fps;
+        const endF = cap.end * fps;
+        const fadeF = 12;
+        if (frame < startF - fadeF || frame >= endF + fadeF) {
+          return null;
+        }
+        const bgOp = interpolate(
+          frame,
+          [startF - fadeF, startF, endF - fadeF, endF],
+          [0, 1, 1, 0],
+          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+        );
+        const broll = i % 2 === 0 ? 'video/broll2.mp4' : 'video/broll3.mp4';
+        const zoom = interpolate(
+          frame,
+          [startF - fadeF, endF + fadeF],
+          [1.02, 1.14],
+          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+        );
+        return (
+          <div
+            key={`bg${i}`}
+            style={{
+              position: 'absolute',
+              inset: -120,
+              opacity: bgOp,
+              overflow: 'hidden',
+            }}
+          >
+            <Video
+              src={staticFile(broll)}
+              muted
+              startFrom={Math.round((i * 90) % 240)}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: `scale(${zoom})`,
+              }}
+            />
+          </div>
+        );
+      })}
+      {/* dark overlay biar teks kebaca */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'linear-gradient(rgba(5,5,10,0.74), rgba(5,5,10,0.58) 42%, rgba(5,5,10,0.80))',
+        }}
+      />
       {/* radial glow */}
       <div
         style={{
@@ -834,6 +889,23 @@ export const Vertical: React.FC<VerticalProps> = ({
           <Audio src={staticFile('audio/pop.mp3')} volume={0.12} />
         </Sequence>
       ))}
+      {/* whoosh tiap ganti caption */}
+      {captions.map((cap, i) =>
+        i === 0 ? null : (
+          <Sequence
+            key={`w${i}`}
+            from={Math.round(cap.start * fps) - Math.round(0.35 * fps)}
+          >
+            <Audio src={staticFile('audio/whoosh.mp3')} volume={0.35} />
+          </Sequence>
+        ),
+      )}
+      {/* riser sebelum CTA terakhir */}
+      <Sequence
+        from={Math.round(captions[captions.length - 1].start * fps) - Math.round(1.2 * fps)}
+      >
+        <Audio src={staticFile('audio/riser.mp3')} volume={0.3} />
+      </Sequence>
       <Audio src={staticFile('audio/music.mp3')} volume={musicVol} />
 
       {/* progress bar */}
