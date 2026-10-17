@@ -1,0 +1,29 @@
+import React from 'react';
+import {Composition} from 'remotion';
+import {Vertical, VerticalProps} from './Vertical';
+import raw from './content.json';
+
+const content = raw as VerticalProps & {durationSec: number};
+
+export const RemotionRoot: React.FC = () => {
+  return (
+    <>
+      <Composition
+        id="Vertical"
+        component={Vertical}
+        durationInFrames={Math.max(30, Math.round(content.durationSec * 30))}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          title: content.title,
+          handle: content.handle,
+          bgFrom: content.bgFrom,
+          bgTo: content.bgTo,
+          accent: content.accent,
+          captions: content.captions,
+        }}
+      />
+    </>
+  );
+};
