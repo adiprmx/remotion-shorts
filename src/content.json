@@ -2,103 +2,103 @@
   "accent": "#ff6a3d",
   "captions": [
     {
-      "end": 3.5,
+      "end": 3.42,
       "kicker": "",
       "start": 0,
       "text": "Coba tebak. Suara yang lagi ngomong ini... manusia atau AI?",
       "scene": "rings",
-      "speak_text": "Coba tebak. Suara yang lagi ngomong ini... manusia atau e ai?"
+      "speak_text": "Coba tebak... Suara yang lagi ngomong ini... manusia, atau e ai?"
     },
     {
-      "end": 10.28,
+      "end": 7.48,
       "kicker": "",
-      "start": 3.5,
+      "start": 3.42,
       "text": "Bukan ElevenLabs yang bayar itu. Ini GRATIS, open source!",
       "scene": "versus",
-      "speak_text": "Bukan ileven lebs yang bayar itu. Ini GRATIS, open sors!"
+      "speak_text": "Bukan ileven lebs yang bayar itu. Ini GRATIS... open sors!"
     },
     {
-      "end": 16.5,
+      "end": 17.22,
       "kicker": "57 RIBU STARS",
-      "start": 10.28,
+      "start": 7.48,
       "text": "Namanya Voicebox. Star GitHub-nya udah 57 RIBU, gila nggak tuh?",
       "scene": "repo",
-      "speak_text": "Namanya vois bok. star git hab-nya udah lima puluh tujuh ribu, gila nggak tuh?"
+      "speak_text": "Namanya vois bok. Star git hab-nya udah lima puluh tujuh ribu! Gila nggak tuh?"
     },
     {
-      "end": 24.64,
+      "end": 26.64,
       "kicker": "LOCAL FIRST",
-      "start": 16.5,
+      "start": 17.22,
       "text": "Yang paling gokil: semuanya jalan di komputer lu sendiri! Nggak perlu internet!",
       "scene": "local",
-      "speak_text": "Yang paling gokil: semuanya jalan di komputer lu sendiri! Nggak perlu internet!"
+      "speak_text": "Yang paling gokil... semuanya jalan di komputer lu sendiri! Nggak perlu internet!"
     },
     {
-      "end": 30.62,
+      "end": 31.5,
       "kicker": "$0",
-      "start": 24.64,
+      "start": 26.64,
       "text": "Nggak ada langganan! Nggak ada kuota! Beneran nol rupiah!",
       "scene": "zero",
-      "speak_text": "Nggak ada langganan! Nggak ada kuota! Beneran nol rupiah!"
+      "speak_text": "Nggak ada langganan! Nggak ada kuota! Beneran... nol rupiah!"
     },
     {
-      "end": 36.92,
+      "end": 36.2,
       "kicker": "PRIVASI",
-      "start": 30.62,
+      "start": 31.5,
       "text": "Data suara lu? Nggak dikirim ke mana-mana. Aman total!",
       "scene": "privacy",
       "speak_text": "Data suara lu? Nggak dikirim ke mana-mana. Aman total!"
     },
     {
-      "end": 42.18,
+      "end": 40.18,
       "kicker": "CARA KERJA",
-      "start": 36.92,
+      "start": 36.2,
       "text": "Modalnya cuma sample suara pendek. Udah, gitu doang!",
       "scene": "clone",
-      "speak_text": "Modalnya cuma sempel suara pendek. Udah, gitu doang!"
+      "speak_text": "Modalnya cuma sempel suara pendek. Udah... gitu doang!"
     },
     {
-      "end": 47.04,
+      "end": 44.96,
       "kicker": "HASIL",
-      "start": 42.18,
+      "start": 40.18,
       "text": "Hasilnya? Emosinya dapet banget, artikulasinya natural parah!",
       "scene": "result",
-      "speak_text": "Hasilnya? Emosinya dapet banget, artikulasinya natural parah!"
+      "speak_text": "Hasilnya? Emosinya dapet banget! Artikulasinya... natural parah!"
     },
     {
-      "end": 51.74,
+      "end": 50.86,
       "kicker": "BUAT APA",
-      "start": 47.04,
+      "start": 44.96,
       "text": "Buat voice over konten? Narasi panjang? Libas semua!",
       "scene": "usecases",
       "speak_text": "Buat vois over konten? Narasi panjang? Libas semua!"
     },
     {
-      "end": 54.92,
+      "end": 54.2,
       "kicker": "GAMPANG",
-      "start": 51.74,
+      "start": 50.86,
       "text": "Ada aplikasi desktopnya juga. Tinggal klik, langsung pakai!",
       "scene": "desktop",
-      "speak_text": "Ada aplikasi desktop-nya juga. Tinggal klik, langsung pakai!"
+      "speak_text": "Ada aplikasi desktop-nya juga. Tinggal klik... langsung pakai!"
     },
     {
-      "end": 60.74,
+      "end": 59.22,
       "kicker": "OPEN SOURCE",
-      "start": 54.92,
+      "start": 54.2,
       "text": "Buat yang suka ngoprek, source code-nya terbuka lebar!",
       "scene": "code",
       "speak_text": "Buat yang suka ngoprek, sors kod-nya terbuka lebar!"
     },
     {
-      "end": 68.56,
+      "end": 62.96,
       "kicker": "",
-      "start": 60.74,
+      "start": 59.22,
       "text": "Link GitHub-nya udah gue taro di bio. Gas coba sekarang!",
       "scene": "cta",
-      "speak_text": "lingk git hab-nya udah gue taro di bi o. Gas coba sekarang!"
+      "speak_text": "Lingk git hab-nya udah gue taro di bi o. Gas... coba sekarang!"
     }
   ],
-  "durationSec": 69.06,
+  "durationSec": 63.46,
   "handle": "@adiprmx",
   "title": "Ini suara AI, bukan manusia.",
   "titleHighlight": "bukan manusia."
