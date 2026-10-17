@@ -1,1 +1,93 @@
-{"accent": "#ff6a3d", "captions": [{"end": 4, "kicker": "", "start": 0, "text": "Gue nemu AI yang bisa niruin suara siapa aja.", "scene": "rings"}, {"end": 8, "kicker": "", "start": 4, "text": "Bukan ElevenLabs. Ini gratis dan open source.", "scene": "versus"}, {"end": 13, "kicker": "57 RIBU STARS", "start": 8, "text": "Namanya Voicebox. Star GitHub-nya 57 ribu.", "scene": "repo"}, {"end": 18, "kicker": "LOCAL FIRST", "start": 13, "text": "Gokilnya: semuanya jalan di komputer lu sendiri.", "scene": "local"}, {"end": 23, "kicker": "$0", "start": 18, "text": "Nggak ada langganan. Nggak ada kuota.", "scene": "zero"}, {"end": 28, "kicker": "PRIVASI", "start": 23, "text": "Data suara lu nggak dikirim ke mana-mana.", "scene": "privacy"}, {"end": 33, "kicker": "CARA KERJA", "start": 28, "text": "Modalnya cuma sample suara yang pendek.", "scene": "clone"}, {"end": 38, "kicker": "HASIL", "start": 33, "text": "Emosinya dapet, artikulasinya natural.", "scene": "result"}, {"end": 43, "kicker": "BUAT APA", "start": 38, "text": "Voice over konten? Narasi panjang? Bisa semua.", "scene": "usecases"}, {"end": 48, "kicker": "GAMPANG", "start": 43, "text": "Ada aplikasi desktopnya, tinggal pakai.", "scene": "desktop"}, {"end": 53, "kicker": "OPEN SOURCE", "start": 48, "text": "Yang suka ngoprek, source code-nya terbuka.", "scene": "code"}, {"end": 58, "kicker": "", "start": 53, "text": "Link GitHub-nya di bio. Gas coba.", "scene": "cta"}], "durationSec": 58, "handle": "@adiprmx", "title": "AI ini bisa niruin suara siapa aja.", "titleHighlight": "niruin suara siapa aja."}
+{
+  "accent": "#ff6a3d",
+  "captions": [
+    {
+      "end": 5.58,
+      "kicker": "",
+      "start": 0,
+      "text": "Gue nemu AI yang bisa niruin suara siapa aja.",
+      "scene": "rings"
+    },
+    {
+      "end": 13.0,
+      "kicker": "",
+      "start": 5.58,
+      "text": "Bukan ElevenLabs. Ini gratis dan open source.",
+      "scene": "versus"
+    },
+    {
+      "end": 16.18,
+      "kicker": "57 RIBU STARS",
+      "start": 13.0,
+      "text": "Namanya Voicebox. Star GitHub-nya 57 ribu.",
+      "scene": "repo"
+    },
+    {
+      "end": 20.56,
+      "kicker": "LOCAL FIRST",
+      "start": 16.18,
+      "text": "Gokilnya: semuanya jalan di komputer lu sendiri.",
+      "scene": "local"
+    },
+    {
+      "end": 23.26,
+      "kicker": "$0",
+      "start": 20.56,
+      "text": "Nggak ada langganan. Nggak ada kuota.",
+      "scene": "zero"
+    },
+    {
+      "end": 27.0,
+      "kicker": "PRIVASI",
+      "start": 23.26,
+      "text": "Data suara lu nggak dikirim ke mana-mana.",
+      "scene": "privacy"
+    },
+    {
+      "end": 30.5,
+      "kicker": "CARA KERJA",
+      "start": 27.0,
+      "text": "Modalnya cuma sample suara yang pendek.",
+      "scene": "clone"
+    },
+    {
+      "end": 34.56,
+      "kicker": "HASIL",
+      "start": 30.5,
+      "text": "Emosinya dapet, artikulasinya natural.",
+      "scene": "result"
+    },
+    {
+      "end": 38.62,
+      "kicker": "BUAT APA",
+      "start": 34.56,
+      "text": "Voice over konten? Narasi panjang? Bisa semua.",
+      "scene": "usecases"
+    },
+    {
+      "end": 41.64,
+      "kicker": "GAMPANG",
+      "start": 38.62,
+      "text": "Ada aplikasi desktopnya, tinggal pakai.",
+      "scene": "desktop"
+    },
+    {
+      "end": 46.02,
+      "kicker": "OPEN SOURCE",
+      "start": 41.64,
+      "text": "Yang suka ngoprek, source code-nya terbuka.",
+      "scene": "code"
+    },
+    {
+      "end": 52.32,
+      "kicker": "",
+      "start": 46.02,
+      "text": "Link GitHub-nya di bio. Gas coba.",
+      "scene": "cta"
+    }
+  ],
+  "durationSec": 52.82,
+  "handle": "@adiprmx",
+  "title": "AI ini bisa niruin suara siapa aja.",
+  "titleHighlight": "niruin suara siapa aja."
+}
