@@ -2,104 +2,104 @@
   "accent": "#ff6a3d",
   "captions": [
     {
-      "end": 3.42,
-      "kicker": "",
+      "text": "Stop scrolling! Dengerin ini. Manusia atau AI?",
+      "speak_text": "Stop scrolling! Dengerin ini. Manusia atau e ai?",
+      "kicker": "TEBAK",
+      "visual": "rings",
       "start": 0,
-      "text": "Coba tebak. Suara yang lagi ngomong ini... manusia atau AI?",
-      "scene": "rings",
-      "speak_text": "Coba tebak... Suara yang lagi ngomong ini... manusia, atau e ai?"
+      "end": 5.18
     },
     {
-      "end": 7.48,
+      "text": "Nggak bisa bedain? Wajar. Ini Voicebox!",
+      "speak_text": "Nggak bisa bedain? Wajar. Ini vois bok!",
+      "kicker": "VOICEBOX",
+      "visual": "versus",
+      "start": 5.18,
+      "end": 9.48
+    },
+    {
+      "text": "AI peniru suara. Gratis. Open source.",
+      "speak_text": "e ai peniru suara. Gratis. Open sors.",
+      "kicker": "GRATIS",
+      "visual": "repo",
+      "start": 9.48,
+      "end": 14.02
+    },
+    {
+      "text": "57 ribu star GitHub. Bukan kaleng-kaleng!",
+      "speak_text": "Lima puluh tujuh ribu star git hab. Bukan kaleng-kaleng!",
+      "kicker": "57RB STAR",
+      "visual": "local",
+      "start": 14.02,
+      "end": 19.44
+    },
+    {
+      "text": "Jalannya di laptop lu sendiri. Offline!",
+      "speak_text": "Jalannya di laptop lu sendiri. Offline!",
+      "kicker": "OFFLINE",
+      "visual": "zero",
+      "start": 19.44,
+      "end": 23.42
+    },
+    {
+      "text": "Nggak ada server. Nggak ada langganan.",
+      "speak_text": "Nggak ada server. Nggak ada langganan.",
       "kicker": "",
-      "start": 3.42,
-      "text": "Bukan ElevenLabs yang bayar itu. Ini GRATIS, open source!",
-      "scene": "versus",
-      "speak_text": "Bukan ileven lebs yang bayar itu. Ini GRATIS... open sors!"
+      "visual": "privacy",
+      "start": 23.42,
+      "end": 25.56
     },
     {
-      "end": 17.22,
-      "kicker": "57 RIBU STARS",
-      "start": 7.48,
-      "text": "Namanya Voicebox. Star GitHub-nya udah 57 RIBU, gila nggak tuh?",
-      "scene": "repo",
-      "speak_text": "Namanya vois bok. Star git hab-nya udah lima puluh tujuh ribu! Gila nggak tuh?"
-    },
-    {
-      "end": 26.64,
-      "kicker": "LOCAL FIRST",
-      "start": 17.22,
-      "text": "Yang paling gokil: semuanya jalan di komputer lu sendiri! Nggak perlu internet!",
-      "scene": "local",
-      "speak_text": "Yang paling gokil... semuanya jalan di komputer lu sendiri! Nggak perlu internet!"
-    },
-    {
-      "end": 31.5,
-      "kicker": "$0",
-      "start": 26.64,
-      "text": "Nggak ada langganan! Nggak ada kuota! Beneran nol rupiah!",
-      "scene": "zero",
-      "speak_text": "Nggak ada langganan! Nggak ada kuota! Beneran... nol rupiah!"
-    },
-    {
-      "end": 36.2,
+      "text": "Data lu aman. Nggak dikirim kemana-mana!",
+      "speak_text": "Data lu aman. Nggak dikirim kemana-mana!",
       "kicker": "PRIVASI",
-      "start": 31.5,
-      "text": "Data suara lu? Nggak dikirim ke mana-mana. Aman total!",
-      "scene": "privacy",
-      "speak_text": "Data suara lu? Nggak dikirim ke mana-mana. Aman total!"
+      "visual": "clone",
+      "start": 25.56,
+      "end": 31.38
     },
     {
-      "end": 40.18,
-      "kicker": "CARA KERJA",
-      "start": 36.2,
-      "text": "Modalnya cuma sample suara pendek. Udah, gitu doang!",
-      "scene": "clone",
-      "speak_text": "Modalnya cuma sempel suara pendek. Udah... gitu doang!"
+      "text": "Cuma butuh rekaman 10 detik. Udah!",
+      "speak_text": "Cuma butuh rekaman sepuluh detik. Udah!",
+      "kicker": "10 DETIK",
+      "visual": "result",
+      "start": 31.38,
+      "end": 36.4
     },
     {
-      "end": 44.96,
-      "kicker": "HASIL",
-      "start": 40.18,
-      "text": "Hasilnya? Emosinya dapet banget, artikulasinya natural parah!",
-      "scene": "result",
-      "speak_text": "Hasilnya? Emosinya dapet banget! Artikulasinya... natural parah!"
+      "text": "Hasilnya? Merinding. Kayak manusia asli!",
+      "speak_text": "Hasilnya? Merinding. Kayak manusia asli!",
+      "kicker": "MERINDING",
+      "visual": "usecases",
+      "start": 36.4,
+      "end": 40.14
     },
     {
-      "end": 50.86,
-      "kicker": "BUAT APA",
-      "start": 44.96,
-      "text": "Buat voice over konten? Narasi panjang? Libas semua!",
-      "scene": "usecases",
-      "speak_text": "Buat vois over konten? Narasi panjang? Libas semua!"
-    },
-    {
-      "end": 54.2,
-      "kicker": "GAMPANG",
-      "start": 50.86,
-      "text": "Ada aplikasi desktopnya juga. Tinggal klik, langsung pakai!",
-      "scene": "desktop",
-      "speak_text": "Ada aplikasi desktop-nya juga. Tinggal klik... langsung pakai!"
-    },
-    {
-      "end": 59.22,
-      "kicker": "OPEN SOURCE",
-      "start": 54.2,
-      "text": "Buat yang suka ngoprek, source code-nya terbuka lebar!",
-      "scene": "code",
-      "speak_text": "Buat yang suka ngoprek, sors kod-nya terbuka lebar!"
-    },
-    {
-      "end": 62.96,
+      "text": "Buat konten, podcast, audiobook. Bisa semua!",
+      "speak_text": "Buat konten, podcast, audiobook. Bisa semua!",
       "kicker": "",
-      "start": 59.22,
-      "text": "Link GitHub-nya udah gue taro di bio. Gas coba sekarang!",
-      "scene": "cta",
-      "speak_text": "Lingk git hab-nya udah gue taro di bi o. Gas... coba sekarang!"
+      "visual": "desktop",
+      "start": 40.14,
+      "end": 44.52
+    },
+    {
+      "text": "Ada aplikasi desktopnya. Tinggal klik!",
+      "speak_text": "Ada aplikasi desktop-nya. Tinggal klik!",
+      "kicker": "GAMPANG",
+      "visual": "code",
+      "start": 44.52,
+      "end": 48.58
+    },
+    {
+      "text": "Link di bio. Gratis. Gas coba!",
+      "speak_text": "Lingk di bi o. Gratis. Gas coba!",
+      "kicker": "GAS",
+      "visual": "cta",
+      "start": 48.58,
+      "end": 53.2
     }
   ],
-  "durationSec": 63.46,
+  "durationSec": 53.7,
   "handle": "@adiprmx",
-  "title": "Ini suara AI, bukan manusia.",
-  "titleHighlight": "bukan manusia."
+  "title": "Suara ini AI. Percaya nggak?",
+  "titleHighlight": "AI."
 }
