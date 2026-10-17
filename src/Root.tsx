@@ -17,9 +17,8 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={{
           title: content.title,
+          titleHighlight: content.titleHighlight,
           handle: content.handle,
-          bgFrom: content.bgFrom,
-          bgTo: content.bgTo,
           accent: content.accent,
           captions: content.captions,
         }}
