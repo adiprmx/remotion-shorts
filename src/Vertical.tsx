@@ -715,13 +715,23 @@ function KineticLine({
         const we = startF + ((j + 1) / words.length) * dur * fps;
         const isCur = frame >= ws && frame < we;
         const isDone = frame >= we;
+        // spring entrance tiap kata muncul
+        const enter = spring({
+          frame: Math.max(0, frame - ws),
+          fps,
+          config: {damping: 14, stiffness: 220},
+        });
+        const rot = interpolate(enter, [0, 1], [-8, 0], {
+          extrapolateRight: 'clamp',
+        });
         return (
           <span
             key={j}
             style={{
               display: 'inline-block',
               color: isCur ? '#0a0a0e' : isDone ? '#ffffff' : DIM,
-              transform: isCur ? 'scale(1.14)' : 'scale(1)',
+              transform: `scale(${isCur ? 1.14 : Math.max(0.4, enter)}) rotate(${rot}deg)`,
+              opacity: enter,
               background: isCur ? accent : 'transparent',
               padding: isCur ? '6px 18px' : '6px 0',
               borderRadius: 18,
@@ -733,6 +743,38 @@ function KineticLine({
         );
       })}
     </div>
+  );
+}
+
+function Particles({frame, accent}: {frame: number; accent: string}) {
+  const dots = 26;
+  return (
+    <>
+      {Array.from({length: dots}).map((_, i) => {
+        const x = (i * 401.3) % 1080;
+        const y0 = (i * 719.7) % 1920;
+        const speed = 0.6 + ((i * 13.7) % 10) / 14;
+        const y = (y0 - frame * speed * 2.2) % 1920;
+        const yy = y < 0 ? y + 1920 : y;
+        const size = 3 + ((i * 7.3) % 10) / 3;
+        const op = 0.12 + ((i * 3.1) % 10) / 45;
+        return (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: x,
+              top: yy,
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              background: i % 4 === 0 ? accent : '#ffffff',
+              opacity: op,
+            }}
+          />
+        );
+      })}
+    </>
   );
 }
 
@@ -797,8 +839,44 @@ export const Vertical: React.FC<VerticalProps> = ({
   })();
   const musicVol = interpolate(duckAmount, [0, 1], [0.075, 0.028]);
 
+  // Punch-in zoom: scale punch tiap caption mulai (efek editing viral)
+  const punch = (() => {
+    let p = 0;
+    for (const cap of captions) {
+      const s = cap.start * fps;
+      if (frame >= s && frame < s + 18) {
+        const t = (frame - s) / 18;
+        p = Math.max(p, Math.sin(t * Math.PI) * 0.035);
+      }
+    }
+    return 1 + p;
+  })();
+
+  // Screen shake halus tiap caption mulai
+  const shake = (() => {
+    let sx = 0,
+      sy = 0;
+    for (const cap of captions) {
+      const s = cap.start * fps;
+      if (frame >= s && frame < s + 10) {
+        const t = (frame - s) / 10;
+        const amp = (1 - t) * 7;
+        sx += Math.sin(frame * 1.7) * amp;
+        sy += Math.cos(frame * 2.3) * amp;
+      }
+    }
+    return {x: sx, y: sy};
+  })();
+
   return (
     <AbsoluteFill style={{background: BG, fontFamily: FONT, color: '#ffffff'}}>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          transform: `scale(${punch}) translate(${shake.x}px, ${shake.y}px)`,
+        }}
+      >
       {/* b-roll video backgrounds, ganti tiap caption + Ken Burns */}
       {captions.map((cap, i) => {
         const startF = cap.start * fps;
@@ -853,6 +931,8 @@ export const Vertical: React.FC<VerticalProps> = ({
             'linear-gradient(rgba(5,5,10,0.74), rgba(5,5,10,0.58) 42%, rgba(5,5,10,0.80))',
         }}
       />
+      {/* partikel mengambang */}
+      <Particles frame={frame} accent={accent} />
       {/* radial glow */}
       <div
         style={{
@@ -950,6 +1030,26 @@ export const Vertical: React.FC<VerticalProps> = ({
           </Sequence>
         ),
       )}
+      {/* impact tiap 4 caption buat penekanan */}
+      {captions.map((cap, i) => {
+        if (i === 0 || i % 4 !== 0) {
+          return null;
+        }
+        const impacts = [
+          'audio/sfx/impact-hit.mp3',
+          'audio/sfx/impact-boom.mp3',
+          'audio/sfx/impact-deep.mp3',
+          'audio/sfx/impact-punch.mp3',
+        ];
+        return (
+          <Sequence key={`im${i}`} from={Math.round(cap.start * fps)}>
+            <Audio
+              src={staticFile(impacts[(i / 4) % impacts.length | 0])}
+              volume={0.28}
+            />
+          </Sequence>
+        );
+      })}
       {/* riser sebelum CTA terakhir */}
       <Sequence
         from={Math.round(captions[captions.length - 1].start * fps) - Math.round(1.2 * fps)}
@@ -1128,6 +1228,7 @@ export const Vertical: React.FC<VerticalProps> = ({
         }}
       >
         <Waveform frame={frame} accent={accent} />
+      </div>
       </div>
     </AbsoluteFill>
   );
