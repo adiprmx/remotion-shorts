@@ -279,20 +279,12 @@ function Scene({
               opacity: 0.55,
             }}
           >
-            <div style={{fontSize: 38, fontWeight: 800}}>ElevenLabs</div>
-            <div
-              style={{
-                fontSize: 52,
-                fontWeight: 900,
-                marginTop: 14,
-                textDecoration: 'line-through',
-                color: 'rgba(255,255,255,0.5)',
-              }}
-            >
-              $$$
+            <div style={{fontSize: 38, fontWeight: 800}}>Game biasa</div>
+            <div style={{fontSize: 52, fontWeight: 900, marginTop: 14}}>
+              10rb
             </div>
             <div style={{fontSize: 28, color: 'rgba(255,255,255,0.45)', marginTop: 10}}>
-              bayar / bulan
+              pemain
             </div>
           </div>
           <div
@@ -305,14 +297,14 @@ function Scene({
               boxShadow: `0 0 60px ${accent}44`,
             }}
           >
-            <div style={{fontSize: 38, fontWeight: 800}}>Voicebox</div>
+            <div style={{fontSize: 38, fontWeight: 800}}>Steal An Egg</div>
             <div
-              style={{fontSize: 64, fontWeight: 900, marginTop: 8, color: accent}}
+              style={{fontSize: 52, fontWeight: 900, marginTop: 8, color: accent}}
             >
-              $0
+              4 JT
             </div>
             <div style={{fontSize: 28, color: 'rgba(255,255,255,0.6)', marginTop: 10}}>
-              gratis selamanya
+              pemain bareng!
             </div>
           </div>
         </div>,
@@ -320,7 +312,7 @@ function Scene({
     }
     case 'repo': {
       const stars = Math.round(
-        interpolate(frame - startF, [0, 70], [0, 57763], {
+        interpolate(frame - startF, [0, 70], [0, 3], {
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         }),
@@ -362,7 +354,7 @@ function Scene({
                 color: 'rgba(255,255,255,0.6)',
               }}
             >
-              github.com/jamiepine/voicebox
+              📅 Juli 2026
             </div>
           </div>
           <div
@@ -374,7 +366,7 @@ function Scene({
             }}
           >
             <div>
-              <div style={{fontSize: 52, fontWeight: 900}}>voicebox</div>
+              <div style={{fontSize: 52, fontWeight: 900}}>Steal An Egg</div>
               <div
                 style={{
                   fontSize: 29,
@@ -448,7 +440,7 @@ function Scene({
             ◈
           </div>
           <div style={{fontSize: 62, fontWeight: 900, marginTop: 26}}>
-            100% LOKAL
+            WINDAH BASUDARA
           </div>
           <div
             style={{
@@ -457,7 +449,7 @@ function Scene({
               marginTop: 12,
             }}
           >
-            jalan di komputer lu sendiri
+            bilang wajib main!
           </div>
         </div>,
       );
@@ -473,18 +465,19 @@ function Scene({
             padding: '40px 44px',
           }}
         >
+          <div style={{fontSize: 100}}>🥚</div>
           <div
             style={{
-              fontSize: 120,
+              fontSize: 54,
               fontWeight: 900,
               color: accent,
-              textShadow: `0 0 70px ${accent}66`,
+              marginTop: 16,
             }}
           >
-            $0
+            CURI TELUR
           </div>
-          <CheckRow label="Tanpa langganan" delay={14} frame={frame} fps={fps} startF={startF} accent={accent} />
-          <CheckRow label="Tanpa kuota" delay={30} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <CheckRow label="Dari sarang" delay={14} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <CheckRow label="Bawa ke base" delay={30} frame={frame} fps={fps} startF={startF} accent={accent} />
         </div>,
       );
     }
@@ -516,12 +509,12 @@ function Scene({
             />
           </svg>
           <div style={{fontSize: 54, fontWeight: 900, marginTop: 24}}>
-            DATA NGGAK KELUAR
+            🐣 TETASIN
           </div>
           <div
             style={{fontSize: 32, color: 'rgba(255,255,255,0.6)', marginTop: 12}}
           >
-            suara lu tetap di perangkat lu
+            dapet pet langka!
           </div>
         </div>,
       );
@@ -538,14 +531,14 @@ function Scene({
           }}
         >
           <div style={{fontSize: 30, letterSpacing: 6, color: 'rgba(255,255,255,0.5)', fontWeight: 700}}>
-            SAMPLE SUARA
+            PET KERJA
           </div>
           <div style={{margin: '18px 0 26px'}}>
             <MiniWave frame={frame} accent="rgba(255,255,255,0.75)" seed={3} n={34} h={44} />
           </div>
           <div style={{fontSize: 44, color: accent, textAlign: 'center', fontWeight: 900}}>↓</div>
           <div style={{fontSize: 30, letterSpacing: 6, color: accent, fontWeight: 700, marginTop: 18}}>
-            HASIL KLONING
+            AUTO CUAN 💰
           </div>
           <div style={{marginTop: 18}}>
             <MiniWave frame={frame} accent={accent} seed={11} n={34} h={60} />
@@ -567,8 +560,9 @@ function Scene({
           <div style={{display: 'flex', justifyContent: 'center', marginBottom: 30}}>
             <MiniWave frame={frame} accent={accent} seed={7} n={40} h={72} />
           </div>
-          <CheckRow label="Emosi dapet" delay={10} frame={frame} fps={fps} startF={startF} accent={accent} />
-          <CheckRow label="Artikulasi natural" delay={26} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <div style={{fontSize: 80, textAlign: 'center', marginBottom: 20}}>⚠️</div>
+          <CheckRow label="Telur lu bisa dicuri!" delay={10} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <CheckRow label="Jaga base baik-baik" delay={26} frame={frame} fps={fps} startF={startF} accent={accent} />
         </div>,
       );
     }
@@ -583,9 +577,10 @@ function Scene({
             padding: '40px 44px',
           }}
         >
-          <CheckRow label="Voice over konten" delay={8} frame={frame} fps={fps} startF={startF} accent={accent} />
-          <CheckRow label="Narasi panjang" delay={24} frame={frame} fps={fps} startF={startF} accent={accent} />
-          <CheckRow label="Dialog dua orang" delay={40} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <div style={{fontSize: 80, textAlign: 'center', marginBottom: 20}}>🏃💨</div>
+          <CheckRow label="Upgrade treadmill" delay={8} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <CheckRow label="Lari makin kenceng" delay={24} frame={frame} fps={fps} startF={startF} accent={accent} />
+          <CheckRow label="Curi telur langka" delay={40} frame={frame} fps={fps} startF={startF} accent={accent} />
         </div>,
       );
     }
@@ -614,7 +609,7 @@ function Scene({
                 <div key={c} style={{width: 20, height: 20, borderRadius: '50%', background: c}} />
               ))}
             </div>
-            <div style={{fontSize: 32, fontWeight: 800, letterSpacing: 4}}>VOICEBOX</div>
+            <div style={{fontSize: 32, fontWeight: 800, letterSpacing: 4}}>STEAL AN EGG</div>
           </div>
           <div style={{padding: '36px 40px', display: 'flex', alignItems: 'center', gap: 34}}>
             <div
@@ -632,12 +627,12 @@ function Scene({
                 flexShrink: 0,
               }}
             >
-              ▶
+              👍
             </div>
             <div>
-              <div style={{fontSize: 40, fontWeight: 800}}>Tinggal pakai.</div>
+              <div style={{fontSize: 40, fontWeight: 800}}>92% kasih like!</div>
               <div style={{fontSize: 30, color: 'rgba(255,255,255,0.55)', marginTop: 8}}>
-                nggak perlu ngoding
+                3,5 juta likes
               </div>
             </div>
           </div>
@@ -656,8 +651,8 @@ function Scene({
             textAlign: 'center',
           }}
         >
-          <div style={{fontSize: 84, fontWeight: 900, color: accent}}>{'</>'}</div>
-          <div style={{fontSize: 56, fontWeight: 900, marginTop: 20}}>OPEN SOURCE</div>
+          <div style={{fontSize: 84, fontWeight: 900}}>📱</div>
+          <div style={{fontSize: 56, fontWeight: 900, marginTop: 20}}>GRATIS</div>
           <div
             style={{
               display: 'inline-block',
@@ -670,7 +665,7 @@ function Scene({
               padding: '10px 28px',
             }}
           >
-            MIT LICENSE
+            DI HP BISA
           </div>
         </div>,
       );
