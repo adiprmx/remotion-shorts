@@ -728,17 +728,17 @@ function KineticLine({
     >
       {words.map((w, j) => {
         const [wsRaw, we] = getWordWindow(j);
-        // KARAOKE LEAD-IN: highlight muncul 80ms SEBELUM suara (terasa lebih nempel)
+        // KARAOKE LEAD-IN: highlight muncul 80ms SEBELUM suara
         const ws = wsRaw - Math.round(0.08 * fps);
         const isCur = frame >= ws && frame < we;
         const isDone = frame >= we;
-        // pop dramatis tiap kata aktif
+        // pop halus dan clean
         const pop = spring({
           frame: Math.max(0, frame - ws),
           fps,
-          config: {damping: 11, stiffness: 280},
+          config: {damping: 16, stiffness: 200},
         });
-        const activeScale = isCur ? 1 + 0.28 * pop : 1;
+        const activeScale = isCur ? 1 + 0.12 * pop : 1;
         return (
           <span
             key={j}
@@ -746,16 +746,13 @@ function KineticLine({
               display: 'inline-block',
               color: isCur ? '#0a0a0e' : isDone ? '#ffffff' : DIM,
               transform: `scale(${isCur ? activeScale : 1})`,
-              opacity: isDone || isCur ? 1 : 0.55,
+              opacity: isDone || isCur ? 1 : 0.6,
               background: isCur ? accent : 'transparent',
-              padding: isCur ? '8px 22px' : '8px 4px',
-              margin: isCur ? '0 6px' : '0 0',
-              borderRadius: 20,
+              padding: isCur ? '6px 16px' : '6px 2px',
+              margin: isCur ? '0 4px' : '0 0',
+              borderRadius: 16,
               fontWeight: isCur ? 900 : 800,
-              boxShadow: isCur
-                ? `0 0 44px ${accent}aa, 0 0 12px ${accent}`
-                : 'none',
-              transition: 'none',
+              boxShadow: isCur ? `0 0 24px ${accent}88` : 'none',
             }}
           >
             {w}
@@ -859,33 +856,17 @@ export const Vertical: React.FC<VerticalProps> = ({
   })();
   const musicVol = interpolate(duckAmount, [0, 1], [0.075, 0.028]);
 
-  // Punch-in zoom: scale punch tiap caption mulai (efek editing viral)
+  // Punch-in zoom HALUS — subtle, profesional (bukan agresif)
   const punch = (() => {
     let p = 0;
     for (const cap of captions) {
       const s = cap.start * fps;
-      if (frame >= s && frame < s + 18) {
-        const t = (frame - s) / 18;
-        p = Math.max(p, Math.sin(t * Math.PI) * 0.035);
+      if (frame >= s && frame < s + 24) {
+        const t = (frame - s) / 24;
+        p = Math.max(p, Math.sin(t * Math.PI) * 0.012);
       }
     }
     return 1 + p;
-  })();
-
-  // Screen shake halus tiap caption mulai
-  const shake = (() => {
-    let sx = 0,
-      sy = 0;
-    for (const cap of captions) {
-      const s = cap.start * fps;
-      if (frame >= s && frame < s + 10) {
-        const t = (frame - s) / 10;
-        const amp = (1 - t) * 7;
-        sx += Math.sin(frame * 1.7) * amp;
-        sy += Math.cos(frame * 2.3) * amp;
-      }
-    }
-    return {x: sx, y: sy};
   })();
 
   return (
@@ -894,7 +875,7 @@ export const Vertical: React.FC<VerticalProps> = ({
         style={{
           position: 'absolute',
           inset: 0,
-          transform: `scale(${punch}) translate(${shake.x}px, ${shake.y}px)`,
+          transform: `scale(${punch})`,
         }}
       >
       {/* b-roll video backgrounds, ganti tiap caption + Ken Burns */}
