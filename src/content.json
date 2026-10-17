@@ -2,104 +2,104 @@
   "accent": "#ff6a3d",
   "captions": [
     {
-      "text": "Stop scrolling! Dengerin ini. Manusia atau AI?",
-      "speak_text": "Stop scrolling! Dengerin ini. Manusia atau e ai?",
-      "kicker": "TEBAK",
+      "text": "Game ini 4 juta orang main bareng!",
+      "speak_text": "Game ini empat juta orang main bareng!",
+      "kicker": "4 JUTA",
       "visual": "rings",
       "start": 0,
-      "end": 5.18
+      "end": 4.3
     },
     {
-      "text": "Nggak bisa bedain? Wajar. Ini Voicebox!",
-      "speak_text": "Nggak bisa bedain? Wajar. Ini vois bok!",
-      "kicker": "VOICEBOX",
+      "text": "Namanya Steal An Egg. Lagi viral parah.",
+      "speak_text": "Namanya stil en ek. Lagi viral parah.",
+      "kicker": "VIRAL",
       "visual": "versus",
-      "start": 5.18,
-      "end": 9.48
+      "start": 4.3,
+      "end": 8.84
     },
     {
-      "text": "AI peniru suara. Gratis. Open source.",
-      "speak_text": "e ai peniru suara. Gratis. Open sors.",
-      "kicker": "GRATIS",
+      "text": "Rilis Juli 2026. Baru 3 bulan!",
+      "speak_text": "Rilis Juli dua ribu dua puluh enam. Baru tiga bulan!",
+      "kicker": "BARU",
       "visual": "repo",
-      "start": 9.48,
-      "end": 14.02
+      "start": 8.84,
+      "end": 13.62
     },
     {
-      "text": "57 ribu star GitHub. Bukan kaleng-kaleng!",
-      "speak_text": "Lima puluh tujuh ribu star git hab. Bukan kaleng-kaleng!",
-      "kicker": "57RB STAR",
+      "text": "Windah Basudara bilang wajib main!",
+      "speak_text": "Windah Basudara bilang wajib main!",
+      "kicker": "WINDAH",
       "visual": "local",
-      "start": 14.02,
-      "end": 19.44
+      "start": 13.62,
+      "end": 17.12
     },
     {
-      "text": "Jalannya di laptop lu sendiri. Offline!",
-      "speak_text": "Jalannya di laptop lu sendiri. Offline!",
-      "kicker": "OFFLINE",
+      "text": "Caranya? Curi telur dari sarang.",
+      "speak_text": "Caranya? Curi telur dari sarang.",
+      "kicker": "CURI",
       "visual": "zero",
-      "start": 19.44,
-      "end": 23.42
+      "start": 17.12,
+      "end": 20.46
     },
     {
-      "text": "Nggak ada server. Nggak ada langganan.",
-      "speak_text": "Nggak ada server. Nggak ada langganan.",
-      "kicker": "",
+      "text": "Tetasin. Dapet pet. Dapet duit.",
+      "speak_text": "Tetasin. Dapet pet. Dapet duit.",
+      "kicker": "TETAS",
       "visual": "privacy",
-      "start": 23.42,
-      "end": 25.56
+      "start": 20.46,
+      "end": 23.8
     },
     {
-      "text": "Data lu aman. Nggak dikirim kemana-mana!",
-      "speak_text": "Data lu aman. Nggak dikirim kemana-mana!",
-      "kicker": "PRIVASI",
+      "text": "Pet-nya kerja buat lu. Auto cuan!",
+      "speak_text": "Pet-nya kerja buat lu. Auto cuan!",
+      "kicker": "CUAN",
       "visual": "clone",
-      "start": 25.56,
-      "end": 31.38
+      "start": 23.8,
+      "end": 30.74
     },
     {
-      "text": "Cuma butuh rekaman 10 detik. Udah!",
-      "speak_text": "Cuma butuh rekaman sepuluh detik. Udah!",
-      "kicker": "10 DETIK",
+      "text": "Tapi awas! Telur lu bisa dicuri juga!",
+      "speak_text": "Tapi awas! Telur lu bisa dicuri juga!",
+      "kicker": "AWAS",
       "visual": "result",
-      "start": 31.38,
-      "end": 36.4
+      "start": 30.74,
+      "end": 35.44
     },
     {
-      "text": "Hasilnya? Merinding. Kayak manusia asli!",
-      "speak_text": "Hasilnya? Merinding. Kayak manusia asli!",
-      "kicker": "MERINDING",
+      "text": "Upgrade treadmill biar lari kenceng.",
+      "speak_text": "Upgrade treadmill biar lari kenceng.",
+      "kicker": "SPEED",
       "visual": "usecases",
-      "start": 36.4,
-      "end": 40.14
+      "start": 35.44,
+      "end": 38.54
     },
     {
-      "text": "Buat konten, podcast, audiobook. Bisa semua!",
-      "speak_text": "Buat konten, podcast, audiobook. Bisa semua!",
-      "kicker": "",
+      "text": "92% pemain kasih like. Gila nggak?",
+      "speak_text": "Sembilan puluh dua persen pemain kasih like. Gila nggak?",
+      "kicker": "92%",
       "visual": "desktop",
-      "start": 40.14,
-      "end": 44.52
+      "start": 38.54,
+      "end": 42.12
     },
     {
-      "text": "Ada aplikasi desktopnya. Tinggal klik!",
-      "speak_text": "Ada aplikasi desktop-nya. Tinggal klik!",
-      "kicker": "GAMPANG",
+      "text": "Gratis. Di HP bisa. Gas main!",
+      "speak_text": "Gratis. Di hape bisa. Gas main!",
+      "kicker": "GRATIS",
       "visual": "code",
-      "start": 44.52,
-      "end": 48.58
+      "start": 42.12,
+      "end": 46.1
     },
     {
-      "text": "Link di bio. Gratis. Gas coba!",
-      "speak_text": "Lingk di bi o. Gratis. Gas coba!",
-      "kicker": "GAS",
+      "text": "Follow buat update game viral lainnya!",
+      "speak_text": "Follow buat update game viral lainnya!",
+      "kicker": "FOLLOW",
       "visual": "cta",
-      "start": 48.58,
-      "end": 53.2
+      "start": 46.1,
+      "end": 50.72
     }
   ],
-  "durationSec": 53.7,
+  "durationSec": 51.22,
   "handle": "@adiprmx",
-  "title": "Suara ini AI. Percaya nggak?",
-  "titleHighlight": "AI."
+  "title": "4 juta orang main game ini bareng!",
+  "titleHighlight": "4 juta orang!"
 }
