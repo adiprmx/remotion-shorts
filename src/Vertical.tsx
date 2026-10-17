@@ -38,6 +38,51 @@ const voiceDurs: number[] = (voiceMeta as {voice: number[]}).voice ?? [];
 const wordTimes: Record<string, {w: string; s: number; e: number}[]> =
   wordTimings as Record<string, {w: string; s: number; e: number}[]>;
 
+/* ---------- EGG BACKGROUND (tema Steal An Egg) ---------- */
+
+function EggBackground({
+  frame,
+  fps,
+  accent,
+}: {
+  frame: number;
+  fps: number;
+  accent: string;
+}) {
+  // 12 telur melayang dengan posisi & kecepatan beda
+  const eggs = Array.from({length: 12}, (_, i) => {
+    const seed = i * 137.5;
+    const x = (seed * 7919) % 1080;
+    const speed = 0.3 + ((i * 37) % 40) / 100;
+    const y = ((frame * speed + i * 400) % 2200) - 150;
+    const size = 24 + ((i * 53) % 40);
+    const rot = Math.sin(frame * 0.02 + i) * 15;
+    const opacity = 0.08 + ((i * 29) % 10) / 100;
+    return {x, y, size, rot, opacity, i};
+  });
+  return (
+    <div style={{position: 'absolute', inset: 0, overflow: 'hidden'}}>
+      {eggs.map((e) => (
+        <div
+          key={e.i}
+          style={{
+            position: 'absolute',
+            left: e.x,
+            top: e.y,
+            width: e.size,
+            height: e.size * 1.3,
+            borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+            background: `linear-gradient(135deg, ${accent}22, ${accent}11)`,
+            border: `2px solid ${accent}33`,
+            transform: `rotate(${e.rot}deg)`,
+            opacity: e.opacity,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ---------- scene visuals (ganti tiap caption) ---------- */
 
 function SceneShell({
@@ -206,18 +251,17 @@ function Scene({
           <div
             style={{
               width: 132,
-              height: 132,
-              borderRadius: '50%',
-              background: accent,
+              height: 172,
+              borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+              background: `linear-gradient(135deg, ${accent}, ${accent}88)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 54,
-              fontWeight: 900,
-              color: '#0a0a0e',
+              fontSize: 64,
+              boxShadow: `0 0 60px ${accent}66`,
             }}
           >
-            AI
+            🥚
           </div>
         </div>,
       );
@@ -862,6 +906,8 @@ export const Vertical: React.FC<VerticalProps> = ({
 
   return (
     <AbsoluteFill style={{background: BG, fontFamily: FONT, color: '#ffffff'}}>
+      {/* EGG BACKGROUND — telur melayang sesuai tema Steal An Egg */}
+      <EggBackground frame={frame} fps={fps} accent={accent} />
       <div
         style={{
           position: 'absolute',
