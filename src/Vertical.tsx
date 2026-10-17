@@ -719,9 +719,12 @@ function KineticLine({
             key={j}
             style={{
               display: 'inline-block',
-              color: isCur ? accent : isDone ? '#ffffff' : DIM,
+              color: isCur ? '#0a0a0e' : isDone ? '#ffffff' : DIM,
               transform: isCur ? 'scale(1.14)' : 'scale(1)',
-              textShadow: isCur ? `0 0 34px ${accent}66` : 'none',
+              background: isCur ? accent : 'transparent',
+              padding: isCur ? '6px 18px' : '6px 0',
+              borderRadius: 18,
+              boxShadow: isCur ? `0 0 34px ${accent}66` : 'none',
             }}
           >
             {w}
@@ -776,6 +779,23 @@ export const Vertical: React.FC<VerticalProps> = ({
   const progress = interpolate(frame, [0, durationInFrames], [0, 100]);
   const drift = interpolate(frame, [0, durationInFrames], [0, 100]);
 
+  // Ducking musik: turun halus saat voiceover bicara, naik lagi di jeda.
+  const duckAmount = (() => {
+    const fade = 12; // frame untuk fade in/out
+    let d = 0;
+    for (const cap of captions) {
+      const s = cap.start * fps;
+      const e = cap.end * fps;
+      if (frame >= s - fade && frame <= e + fade) {
+        const dIn = Math.min(1, (frame - (s - fade)) / fade);
+        const dOut = Math.min(1, (e + fade - frame) / fade);
+        d = Math.max(d, Math.min(dIn, dOut));
+      }
+    }
+    return d;
+  })();
+  const musicVol = interpolate(duckAmount, [0, 1], [0.075, 0.028]);
+
   return (
     <AbsoluteFill style={{background: BG, fontFamily: FONT, color: '#ffffff'}}>
       {/* radial glow */}
@@ -811,10 +831,10 @@ export const Vertical: React.FC<VerticalProps> = ({
       ))}
       {captions.map((cap, i) => (
         <Sequence key={`p${i}`} from={Math.round(cap.start * fps)}>
-          <Audio src={staticFile('audio/pop.mp3')} volume={0.22} />
+          <Audio src={staticFile('audio/pop.mp3')} volume={0.12} />
         </Sequence>
       ))}
-      <Audio src={staticFile('audio/music.mp3')} volume={0.1} />
+      <Audio src={staticFile('audio/music.mp3')} volume={musicVol} />
 
       {/* progress bar */}
       <div
@@ -874,9 +894,23 @@ export const Vertical: React.FC<VerticalProps> = ({
         }
         const startF = cap.start * fps;
         const endF = cap.end * fps;
-        if (frame < startF || frame >= endF) {
+        const fadeF = 10; // crossfade antar scene
+        if (frame < startF - fadeF || frame >= endF + fadeF) {
           return null;
         }
+        const sceneOp = interpolate(
+          frame,
+          [startF - fadeF, startF, endF - fadeF, endF],
+          [0, 1, 1, 0],
+          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+        );
+        // gerak float/zoom halus selama scene tampil
+        const floatScale = interpolate(
+          frame,
+          [startF - fadeF, endF + fadeF],
+          [0.96, 1.04],
+          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+        );
         return (
           <div
             key={`s${i}`}
@@ -887,6 +921,8 @@ export const Vertical: React.FC<VerticalProps> = ({
               right: 64,
               display: 'flex',
               justifyContent: 'center',
+              opacity: sceneOp,
+              transform: `scale(${floatScale})`,
             }}
           >
             <Scene
