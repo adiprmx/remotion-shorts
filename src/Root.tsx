@@ -12,7 +12,7 @@ export const RemotionRoot: React.FC = () => {
         id="Vertical"
         component={Vertical}
         durationInFrames={Math.max(30, Math.round(content.durationSec * 30))}
-        fps={30}
+        fps={60}
         width={1080}
         height={1920}
         defaultProps={{
