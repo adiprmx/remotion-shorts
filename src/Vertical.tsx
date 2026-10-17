@@ -1,8 +1,11 @@
 import React from 'react';
 import {
   AbsoluteFill,
+  Audio,
   interpolate,
+  Sequence,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
@@ -49,6 +52,20 @@ export const Vertical: React.FC<VerticalProps> = ({
         color: '#ffffff',
       }}
     >
+      {/* voiceover: 1 klip per caption, mulai pas caption muncul */}
+      {captions.map((cap, i) => (
+        <Sequence key={`v${i}`} from={Math.round(cap.start * fps)}>
+          <Audio src={staticFile(`audio/voice-${i}.mp3`)} />
+        </Sequence>
+      ))}
+      {/* sfx pop tiap caption muncul */}
+      {captions.map((cap, i) => (
+        <Sequence key={`p${i}`} from={Math.round(cap.start * fps)}>
+          <Audio src={staticFile('audio/pop.mp3')} volume={0.25} />
+        </Sequence>
+      ))}
+      {/* musik latar */}
+      <Audio src={staticFile('audio/music.mp3')} volume={0.12} />
       {/* progress bar */}
       <div
         style={{
