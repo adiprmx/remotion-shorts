@@ -2,92 +2,92 @@
   "accent": "#ff6a3d",
   "captions": [
     {
-      "end": 7.26,
+      "end": 3.74,
       "kicker": "",
       "start": 0,
-      "text": "Gila! Gue baru nemu AI yang bisa niruin suara siapa aja! Serius!",
+      "text": "Coba tebak. Suara yang lagi ngomong ini... manusia atau AI?",
       "scene": "rings"
     },
     {
-      "end": 13.16,
+      "end": 9.64,
       "kicker": "",
-      "start": 7.26,
+      "start": 3.74,
       "text": "Bukan ElevenLabs yang bayar itu. Ini GRATIS, open source!",
       "scene": "versus"
     },
     {
-      "end": 17.54,
+      "end": 14.02,
       "kicker": "57 RIBU STARS",
-      "start": 13.16,
+      "start": 9.64,
       "text": "Namanya Voicebox. Star GitHub-nya udah 57 RIBU, gila nggak tuh?",
       "scene": "repo"
     },
     {
-      "end": 24.16,
+      "end": 20.64,
       "kicker": "LOCAL FIRST",
-      "start": 17.54,
+      "start": 14.02,
       "text": "Yang paling gokil: semuanya jalan di komputer lu sendiri! Nggak perlu internet!",
       "scene": "local"
     },
     {
-      "end": 29.1,
+      "end": 25.58,
       "kicker": "$0",
-      "start": 24.16,
+      "start": 20.64,
       "text": "Nggak ada langganan! Nggak ada kuota! Beneran nol rupiah!",
       "scene": "zero"
     },
     {
-      "end": 33.88,
+      "end": 30.36,
       "kicker": "PRIVASI",
-      "start": 29.1,
+      "start": 25.58,
       "text": "Data suara lu? Nggak dikirim ke mana-mana. Aman total!",
       "scene": "privacy"
     },
     {
-      "end": 39.14,
+      "end": 35.62,
       "kicker": "CARA KERJA",
-      "start": 33.88,
+      "start": 30.36,
       "text": "Modalnya cuma sample suara pendek. Udah, gitu doang!",
       "scene": "clone"
     },
     {
-      "end": 44.48,
+      "end": 40.96,
       "kicker": "HASIL",
-      "start": 39.14,
+      "start": 35.62,
       "text": "Hasilnya? Emosinya dapet banget, artikulasinya natural parah!",
       "scene": "result"
     },
     {
-      "end": 51.5,
+      "end": 47.98,
       "kicker": "BUAT APA",
-      "start": 44.48,
+      "start": 40.96,
       "text": "Buat voice over konten? Narasi panjang? Libas semua!",
       "scene": "usecases"
     },
     {
-      "end": 57.48,
+      "end": 53.96,
       "kicker": "GAMPANG",
-      "start": 51.5,
+      "start": 47.98,
       "text": "Ada aplikasi desktopnya juga. Tinggal klik, langsung pakai!",
       "scene": "desktop"
     },
     {
-      "end": 65.3,
+      "end": 61.78,
       "kicker": "OPEN SOURCE",
-      "start": 57.48,
+      "start": 53.96,
       "text": "Buat yang suka ngoprek, source code-nya terbuka lebar!",
       "scene": "code"
     },
     {
-      "end": 73.04,
+      "end": 69.52,
       "kicker": "",
-      "start": 65.3,
+      "start": 61.78,
       "text": "Link GitHub-nya udah gue taro di bio. Gas coba sekarang!",
       "scene": "cta"
     }
   ],
-  "durationSec": 73.54,
+  "durationSec": 70.02,
   "handle": "@adiprmx",
-  "title": "AI ini bisa niruin suara siapa aja.",
-  "titleHighlight": "niruin suara siapa aja."
+  "title": "Ini suara AI, bukan manusia.",
+  "titleHighlight": "bukan manusia."
 }
