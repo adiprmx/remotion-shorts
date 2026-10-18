@@ -1,105 +1,71 @@
 {
-  "accent": "#ff6a3d",
-  "captions": [
-    {
-      "text": "Game ini 4 juta orang main bareng!",
-      "speak_text": "Game ini empat juta orang main bareng!",
-      "kicker": "4 JUTA",
-      "visual": "rings",
-      "start": 0,
-      "end": 4.3
-    },
-    {
-      "text": "Namanya Steal An Egg. Lagi viral parah.",
-      "speak_text": "Namanya stil en ek. Lagi viral parah.",
-      "kicker": "VIRAL",
-      "visual": "versus",
-      "start": 4.3,
-      "end": 8.84
-    },
-    {
-      "text": "Rilis Juli 2026. Baru 3 bulan!",
-      "speak_text": "Rilis Juli dua ribu dua puluh enam. Baru tiga bulan!",
-      "kicker": "BARU",
-      "visual": "repo",
-      "start": 8.84,
-      "end": 13.62
-    },
-    {
-      "text": "Windah Basudara bilang wajib main!",
-      "speak_text": "Windah Basudara bilang wajib main!",
-      "kicker": "WINDAH",
-      "visual": "local",
-      "start": 13.62,
-      "end": 17.12
-    },
-    {
-      "text": "Caranya? Curi telur dari sarang.",
-      "speak_text": "Caranya? Curi telur dari sarang.",
-      "kicker": "CURI",
-      "visual": "zero",
-      "start": 17.12,
-      "end": 20.46
-    },
-    {
-      "text": "Tetasin. Dapet pet. Dapet duit.",
-      "speak_text": "Tetasin. Dapet pet. Dapet duit.",
-      "kicker": "TETAS",
-      "visual": "privacy",
-      "start": 20.46,
-      "end": 23.8
-    },
-    {
-      "text": "Pet-nya kerja buat lu. Auto cuan!",
-      "speak_text": "Pet-nya kerja buat lu. Auto cuan!",
-      "kicker": "CUAN",
-      "visual": "clone",
-      "start": 23.8,
-      "end": 30.74
-    },
-    {
-      "text": "Tapi awas! Telur lu bisa dicuri juga!",
-      "speak_text": "Tapi awas! Telur lu bisa dicuri juga!",
-      "kicker": "AWAS",
-      "visual": "result",
-      "start": 30.74,
-      "end": 35.44
-    },
-    {
-      "text": "Upgrade treadmill biar lari kenceng.",
-      "speak_text": "Upgrade treadmill biar lari kenceng.",
-      "kicker": "SPEED",
-      "visual": "usecases",
-      "start": 35.44,
-      "end": 38.54
-    },
-    {
-      "text": "92% pemain kasih like. Gila nggak?",
-      "speak_text": "Sembilan puluh dua persen pemain kasih like. Gila nggak?",
-      "kicker": "92%",
-      "visual": "desktop",
-      "start": 38.54,
-      "end": 42.12
-    },
-    {
-      "text": "Gratis. Di HP bisa. Gas main!",
-      "speak_text": "Gratis. Di hape bisa. Gas main!",
-      "kicker": "GRATIS",
-      "visual": "code",
-      "start": 42.12,
-      "end": 46.1
-    },
-    {
-      "text": "Follow buat update game viral lainnya!",
-      "speak_text": "Follow buat update game viral lainnya!",
-      "kicker": "FOLLOW",
-      "visual": "cta",
-      "start": 46.1,
-      "end": 50.72
-    }
-  ],
-  "durationSec": 51.22,
-  "handle": "@adiprmx",
-  "title": "4 juta orang main game ini bareng!",
-  "titleHighlight": "4 juta orang!"
+ "accent": "#ff6a3d",
+ "captions": [
+  {
+   "kicker": "HOOK",
+   "speak_text": "gue curi telur raksasa!",
+   "text": "GUE CURI TELUR RAKSASA!",
+   "visual": "rings",
+   "start": 0.0,
+   "end": 2.84
+  },
+  {
+   "kicker": "LANGKA",
+   "speak_text": "telur ini langka parah!",
+   "text": "Telur ini langka parah!",
+   "visual": "versus",
+   "start": 2.84,
+   "end": 7.76
+  },
+  {
+   "kicker": "BAHAYA",
+   "speak_text": "penjaganya gede banget!",
+   "text": "Penjaganya gede banget!",
+   "visual": "zero",
+   "start": 7.76,
+   "end": 10.44
+  },
+  {
+   "kicker": "KABUR",
+   "speak_text": "ran! lari kenceng!",
+   "text": "RUN!! LARI KENCENG!",
+   "visual": "usecases",
+   "start": 10.44,
+   "end": 13.04
+  },
+  {
+   "kicker": "PANIK",
+   "speak_text": "dikejar naga raksasa!",
+   "text": "Dikejar naga raksasa!",
+   "visual": "result",
+   "start": 13.04,
+   "end": 16.36
+  },
+  {
+   "kicker": "WTF",
+   "speak_text": "hampir ketangkep! gila!",
+   "text": "Hampir ketangkep! Gila!",
+   "visual": "clone",
+   "start": 16.36,
+   "end": 19.36
+  },
+  {
+   "kicker": "JACKPOT",
+   "speak_text": "tetesin... dapet legendaris!",
+   "text": "Tetesin... DAPET LEGENDARIS!",
+   "visual": "privacy",
+   "start": 19.36,
+   "end": 23.8
+  },
+  {
+   "kicker": "FOLLOW",
+   "speak_text": "follow buat curi telur lainnya!",
+   "text": "Follow buat curi telur lainnya!",
+   "visual": "cta",
+   "start": 23.8,
+   "end": 27.04
+  }
+ ],
+ "handle": "@adiprmx",
+ "title": "GUE CURI TELUR RAKSASA!"
 }
