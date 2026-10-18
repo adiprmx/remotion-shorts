@@ -925,14 +925,14 @@ export const Vertical: React.FC<VerticalProps> = ({
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
         const bgMap = [
-          'bg/egg-world.mp4', // 0: hook - curi telur raksasa
-          'bg/coins.mp4',     // 1: langka
-          'bg/egg-world.mp4', // 2: penjaga gede
-          'bg/speed.mp4',     // 3: RUN kabur
-          'bg/egg-world.mp4', // 4: dikejar naga
-          'bg/speed.mp4',     // 5: hampir ketangkep
-          'bg/hatching.mp4',  // 6: jackpot legendaris
-          'bg/phone.mp4',     // 7: follow CTA
+          'bg/v22/game-base.mp4',   // 0: hook - gameplay Roblox asli (base action)
+          'bg/v22/art-trex.mp4',    // 1: langka - art resmi: TREX EGG
+          'bg/v22/art-yeti.mp4',    // 2: penjaga gede - art resmi: Yeti raksasa
+          'bg/v22/art-run.mp4',     // 3: RUN kabur - art resmi: lari bawa telur dikejar ular
+          'bg/v22/game-run.mp4',    // 4: dikejar naga - gameplay Roblox asli (lari)
+          'bg/v22/game-dark.mp4',   // 5: hampir ketangkep - gameplay Roblox asli (dark)
+          'bg/v22/art-cosmic.mp4',  // 6: jackpot - art resmi: telur cosmic + naga
+          'bg/v22/game-street.mp4', // 7: follow CTA - gameplay Roblox asli
         ];
         const broll = bgMap[i] ?? 'bg/egg-world.mp4';
         const zoom = interpolate(
