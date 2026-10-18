@@ -925,22 +925,29 @@ export const Vertical: React.FC<VerticalProps> = ({
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
         const bgMap = [
-          'bg/v22/game-base.mp4',   // 0: hook - gameplay Roblox asli (base action)
-          'bg/v22/art-trex.mp4',    // 1: langka - art resmi: TREX EGG
-          'bg/v22/art-yeti.mp4',    // 2: penjaga gede - art resmi: Yeti raksasa
-          'bg/v22/art-run.mp4',     // 3: RUN kabur - art resmi: lari bawa telur dikejar ular
-          'bg/v22/game-run.mp4',    // 4: dikejar naga - gameplay Roblox asli (lari)
-          'bg/v22/game-dark.mp4',   // 5: hampir ketangkep - gameplay Roblox asli (dark)
-          'bg/v22/art-cosmic.mp4',  // 6: jackpot - art resmi: telur cosmic + naga
-          'bg/v22/game-street.mp4', // 7: follow CTA - gameplay Roblox asli
+          'bg/v23/game-dandy-hook.mp4', // 0: hook - Dandy's World vertikal tajam (1.3x)
+          'bg/v22/art-trex.mp4',        // 1: langka - art resmi: TREX EGG
+          'bg/v22/art-yeti.mp4',        // 2: penjaga gede - art resmi: Yeti raksasa
+          'bg/v22/art-run.mp4',         // 3: RUN kabur - art resmi: lari bawa telur dikejar ular
+          'bg/v23/game-dandy-panik.mp4',// 4: dikejar naga - Dandy's World vertikal tajam
+          'bg/v23/game-battle-wtf.mp4', // 5: hampir ketangkep - Battlegrounds 720p action
+          'bg/v22/art-cosmic.mp4',      // 6: jackpot - art resmi: telur cosmic + naga
+          'bg/v23/game-dandy-follow.mp4',// 7: follow CTA - Dandy's World vertikal tajam
         ];
         const broll = bgMap[i] ?? 'bg/egg-world.mp4';
-        const zoom = interpolate(
-          frame,
-          [startF - fadeF, endF + fadeF],
-          [1.02, 1.14],
-          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
-        );
+        const zoom =
+          interpolate(
+            frame,
+            [startF - fadeF, endF + fadeF],
+            [1.0, 1.22],
+            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+          ) *
+          interpolate(
+            frame,
+            [startF, startF + 6, startF + 16],
+            [1.08, 1.08, 1],
+            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+          );
         return (
           <div
             key={`bg${i}`}
@@ -962,6 +969,21 @@ export const Vertical: React.FC<VerticalProps> = ({
                 transform: `scale(${zoom})`,
               }}
             />
+            {[0, 3, 6].includes(i) && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: '#ffffff',
+                  opacity: interpolate(
+                    frame,
+                    [startF, startF + 2, startF + 8],
+                    [0.3, 0.3, 0],
+                    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+                  ),
+                }}
+              />
+            )}
           </div>
         );
       })}
@@ -1000,7 +1022,7 @@ export const Vertical: React.FC<VerticalProps> = ({
         ];
         return (
           <Sequence key={`p${i}`} from={Math.round(cap.start * fps)}>
-            <Audio src={staticFile(clicks[i % clicks.length])} volume={0.18} />
+            <Audio src={staticFile(clicks[i % clicks.length])} volume={0.32} />
           </Sequence>
         );
       })}
@@ -1020,7 +1042,7 @@ export const Vertical: React.FC<VerticalProps> = ({
             key={`w${i}`}
             from={Math.round(cap.start * fps) - Math.round(0.3 * fps)}
           >
-            <Audio src={staticFile(whooshes[i % whooshes.length])} volume={0.3} />
+            <Audio src={staticFile(whooshes[i % whooshes.length])} volume={0.45} />
           </Sequence>
         );
       })}
@@ -1040,7 +1062,7 @@ export const Vertical: React.FC<VerticalProps> = ({
           >
             <Audio
               src={staticFile(sweeps[(i / 3) % sweeps.length | 0])}
-              volume={0.22}
+              volume={0.38}
             />
           </Sequence>
         );
@@ -1052,30 +1074,46 @@ export const Vertical: React.FC<VerticalProps> = ({
             key={`d${i}`}
             from={Math.round(cap.start * fps) + Math.round(0.15 * fps)}
           >
-            <Audio src={staticFile('audio/sfx/notify-ding.mp3')} volume={0.2} />
+            <Audio src={staticFile('audio/sfx/notify-ding.mp3')} volume={0.35} />
           </Sequence>
         ),
       )}
-      {/* impact tiap 4 caption buat penekanan */}
+      {/* IMPACT di big beats: hook, RUN, panik, jackpot — biar nampol */}
       {captions.map((cap, i) => {
-        if (i === 0 || i % 4 !== 0) {
+        const beats: Record<number, string> = {
+          0: 'audio/sfx/impact-boom.mp3',
+          3: 'audio/sfx/impact-punch.mp3',
+          4: 'audio/sfx/impact-deep.mp3',
+          6: 'audio/sfx/impact-boom.mp3',
+        };
+        const src = beats[i];
+        if (!src) {
           return null;
         }
-        const impacts = [
-          'audio/sfx/impact-hit.mp3',
-          'audio/sfx/impact-boom.mp3',
-          'audio/sfx/impact-deep.mp3',
-          'audio/sfx/impact-punch.mp3',
-        ];
         return (
           <Sequence key={`im${i}`} from={Math.round(cap.start * fps)}>
-            <Audio
-              src={staticFile(impacts[(i / 4) % impacts.length | 0])}
-              volume={0.28}
-            />
+            <Audio src={staticFile(src)} volume={0.55} />
           </Sequence>
         );
       })}
+      {/* lapisan kedua: whoosh rocket bareng impact di hook biar meledak */}
+      <Sequence
+        key="imhook2"
+        from={Math.round(captions[0].start * fps)}
+      >
+        <Audio src={staticFile('audio/sfx/whoosh-rocket.mp3')} volume={0.5} />
+      </Sequence>
+      {/* kaskade ding di jackpot: 3x beruntun */}
+      {[0, 1, 2].map(k => (
+        <Sequence
+          key={`jk${k}`}
+          from={
+            Math.round(captions[6].start * fps) + Math.round((0.3 + k * 0.22) * fps)
+          }
+        >
+          <Audio src={staticFile('audio/sfx/notify-ding.mp3')} volume={0.4} />
+        </Sequence>
+      ))}
       {/* riser sebelum CTA terakhir */}
       <Sequence
         from={Math.round(captions[captions.length - 1].start * fps) - Math.round(1.2 * fps)}
