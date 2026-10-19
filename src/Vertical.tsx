@@ -926,14 +926,14 @@ export const Vertical: React.FC<VerticalProps> = ({
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
         const bgMap = [
-          'bg/v23/game-dandy-hook.mp4', // 0: hook - Dandy's World vertikal tajam
+          'bg/v25/game-dandy-hook.mp4', // 0: hook - Dandy's World (FIX v25: rotation matrix)
           'bg/v24/art-trex.mp4',        // 1: langka - art resmi TREX EGG (fix gepeng)
           'bg/v24/art-yeti.mp4',        // 2: penjaga gede - art resmi Yeti (fix gepeng)
           'bg/v24/art-run.mp4',         // 3: RUN kabur - art resmi lari+ular (fix gepeng)
-          'bg/v23/game-dandy-panik.mp4',// 4: dikejar naga - Dandy's World vertikal tajam
+          'bg/v25/game-dandy-panik.mp4',// 4: dikejar naga - Dandy's World (FIX v25)
           'bg/v23/game-battle-wtf.mp4', // 5: hampir ketangkep - Battlegrounds 720p
           'bg/v24/art-cosmic.mp4',      // 6: jackpot - art resmi cosmic+naga (fix gepeng)
-          'bg/v23/game-dandy-follow.mp4',// 7: follow CTA - Dandy's World vertikal tajam
+          'bg/v25/game-dandy-follow.mp4',// 7: follow CTA - Dandy's World (FIX v25)
         ];
         const broll = bgMap[i] ?? 'bg/egg-world.mp4';
         const zoom =
