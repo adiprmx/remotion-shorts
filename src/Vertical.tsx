@@ -39,24 +39,25 @@ const voiceDurs: number[] = (voiceMeta as {voice: number[]}).voice ?? [];
 const wordTimes: Record<string, {w: string; s: number; e: number}[]> =
   wordTimings as Record<string, {w: string; s: number; e: number}[]>;
 
-// 16 segmen background — fast-cut 2x per caption, total 16 video berbeda
+// 16 segmen background v27 — SEMUA dari art resmi Steal An Egg (konsisten naskah)
+// upscale maksimal + motion beda tiap segmen
 const BG_SEGS: {src: string; start: number; end: number}[] = [
-  {src: 'bg/v25/game-dandy-hook.mp4', start: 0.0, end: 1.42},   // 0 hook A
-  {src: 'bg/v26/game-battle-b1.mp4', start: 1.42, end: 2.84},    // 0 hook B
-  {src: 'bg/v24/art-trex.mp4', start: 2.84, end: 5.3},           // 1 langka A
-  {src: 'bg/v26/game-dandy-left.mp4', start: 5.3, end: 7.76},    // 1 langka B
-  {src: 'bg/v24/art-yeti.mp4', start: 7.76, end: 9.35},          // 2 yeti A
-  {src: 'bg/v26/game-battle-b2.mp4', start: 9.35, end: 10.94},   // 2 yeti B
-  {src: 'bg/v24/art-run.mp4', start: 10.94, end: 12.24},         // 3 RUN A
-  {src: 'bg/v26/game-battle-b3.mp4', start: 12.24, end: 13.54},   // 3 RUN B
-  {src: 'bg/v25/game-dandy-panik.mp4', start: 13.54, end: 15.2},  // 4 panik A
-  {src: 'bg/v26/game-battle-b4.mp4', start: 15.2, end: 16.86},    // 4 panik B
-  {src: 'bg/v23/game-battle-wtf.mp4', start: 16.86, end: 18.36},  // 5 WTF A
-  {src: 'bg/v26/game-dandy-right.mp4', start: 18.36, end: 19.86}, // 5 WTF B
-  {src: 'bg/v24/art-cosmic.mp4', start: 19.86, end: 22.08},       // 6 jackpot A
-  {src: 'bg/v26/game-battle-b5.mp4', start: 22.08, end: 24.3},    // 6 jackpot B
-  {src: 'bg/v25/game-dandy-follow.mp4', start: 24.3, end: 25.67}, // 7 follow A
-  {src: 'bg/v26/game-battle-b6.mp4', start: 25.67, end: 27.04},   // 7 follow B
+  {src: 'bg/v27/s00_hook_egg.mp4', start: 0.0, end: 1.42},      // 0 hook: telur raksasa zoom in
+  {src: 'bg/v27/s01_hook_egg2.mp4', start: 1.42, end: 2.84},    // 0 hook: telur pan
+  {src: 'bg/v27/s02_langka_egg.mp4', start: 2.84, end: 5.3},     // 1 langka: telur zoom pelan
+  {src: 'bg/v27/s03_langka_icon.mp4', start: 5.3, end: 7.76},    // 1 langka: logo
+  {src: 'bg/v27/s04_yeti.mp4', start: 7.76, end: 9.35},         // 2 yeti: penjaga zoom
+  {src: 'bg/v27/s05_yeti2.mp4', start: 9.35, end: 10.94},       // 2 yeti: pan
+  {src: 'bg/v27/s06_run.mp4', start: 10.94, end: 12.24},        // 3 RUN: lari pan cepat
+  {src: 'bg/v27/s07_run2.mp4', start: 12.24, end: 13.54},       // 3 RUN: zoom
+  {src: 'bg/v27/s08_panik_dragon.mp4', start: 13.54, end: 15.2},// 4 panik: naga zoom
+  {src: 'bg/v27/s09_panik_dragon2.mp4', start: 15.2, end: 16.86},// 4 panik: naga pan
+  {src: 'bg/v27/s10_wtf_yeti.mp4', start: 16.86, end: 18.36},   // 5 WTF: yeti tegang
+  {src: 'bg/v27/s11_wtf_run.mp4', start: 18.36, end: 19.86},   // 5 WTF: lari
+  {src: 'bg/v27/s12_jackpot.mp4', start: 19.86, end: 22.08},    // 6 jackpot: legendary
+  {src: 'bg/v27/s13_jackpot_egg.mp4', start: 22.08, end: 24.3}, // 6 jackpot: telur
+  {src: 'bg/v27/s14_follow_icon.mp4', start: 24.3, end: 25.67}, // 7 follow: logo
+  {src: 'bg/v27/s15_follow_egg.mp4', start: 25.67, end: 27.04}, // 7 follow: telur
 ];
 
 /* ---------- EGG BACKGROUND (tema Steal An Egg) ---------- */
