@@ -39,6 +39,26 @@ const voiceDurs: number[] = (voiceMeta as {voice: number[]}).voice ?? [];
 const wordTimes: Record<string, {w: string; s: number; e: number}[]> =
   wordTimings as Record<string, {w: string; s: number; e: number}[]>;
 
+// 16 segmen background — fast-cut 2x per caption, total 16 video berbeda
+const BG_SEGS: {src: string; start: number; end: number}[] = [
+  {src: 'bg/v25/game-dandy-hook.mp4', start: 0.0, end: 1.42},   // 0 hook A
+  {src: 'bg/v26/game-battle-b1.mp4', start: 1.42, end: 2.84},    // 0 hook B
+  {src: 'bg/v24/art-trex.mp4', start: 2.84, end: 5.3},           // 1 langka A
+  {src: 'bg/v26/game-dandy-left.mp4', start: 5.3, end: 7.76},    // 1 langka B
+  {src: 'bg/v24/art-yeti.mp4', start: 7.76, end: 9.35},          // 2 yeti A
+  {src: 'bg/v26/game-battle-b2.mp4', start: 9.35, end: 10.94},   // 2 yeti B
+  {src: 'bg/v24/art-run.mp4', start: 10.94, end: 12.24},         // 3 RUN A
+  {src: 'bg/v26/game-battle-b3.mp4', start: 12.24, end: 13.54},   // 3 RUN B
+  {src: 'bg/v25/game-dandy-panik.mp4', start: 13.54, end: 15.2},  // 4 panik A
+  {src: 'bg/v26/game-battle-b4.mp4', start: 15.2, end: 16.86},    // 4 panik B
+  {src: 'bg/v23/game-battle-wtf.mp4', start: 16.86, end: 18.36},  // 5 WTF A
+  {src: 'bg/v26/game-dandy-right.mp4', start: 18.36, end: 19.86}, // 5 WTF B
+  {src: 'bg/v24/art-cosmic.mp4', start: 19.86, end: 22.08},       // 6 jackpot A
+  {src: 'bg/v26/game-battle-b5.mp4', start: 22.08, end: 24.3},    // 6 jackpot B
+  {src: 'bg/v25/game-dandy-follow.mp4', start: 24.3, end: 25.67}, // 7 follow A
+  {src: 'bg/v26/game-battle-b6.mp4', start: 25.67, end: 27.04},   // 7 follow B
+];
+
 /* ---------- EGG BACKGROUND (tema Steal An Egg) ---------- */
 
 function EggBackground({
@@ -911,11 +931,11 @@ export const Vertical: React.FC<VerticalProps> = ({
           transform: `scale(${punch})`,
         }}
       >
-      {/* b-roll video backgrounds, ganti tiap caption + Ken Burns */}
-      {captions.map((cap, i) => {
-        const startF = cap.start * fps;
-        const endF = cap.end * fps;
-        const fadeF = 12;
+      {/* b-roll video backgrounds — 16 segmen, fast-cut tiap ±1.7 detik */}
+      {BG_SEGS.map((seg, i) => {
+        const startF = seg.start * fps;
+        const endF = seg.end * fps;
+        const fadeF = 8; // fade cepat untuk fast-cut
         if (frame < startF - fadeF || frame >= endF + fadeF) {
           return null;
         }
@@ -925,17 +945,7 @@ export const Vertical: React.FC<VerticalProps> = ({
           [0, 1, 1, 0],
           {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
         );
-        const bgMap = [
-          'bg/v25/game-dandy-hook.mp4', // 0: hook - Dandy's World (FIX v25: rotation matrix)
-          'bg/v24/art-trex.mp4',        // 1: langka - art resmi TREX EGG (fix gepeng)
-          'bg/v24/art-yeti.mp4',        // 2: penjaga gede - art resmi Yeti (fix gepeng)
-          'bg/v24/art-run.mp4',         // 3: RUN kabur - art resmi lari+ular (fix gepeng)
-          'bg/v25/game-dandy-panik.mp4',// 4: dikejar naga - Dandy's World (FIX v25)
-          'bg/v23/game-battle-wtf.mp4', // 5: hampir ketangkep - Battlegrounds 720p
-          'bg/v24/art-cosmic.mp4',      // 6: jackpot - art resmi cosmic+naga (fix gepeng)
-          'bg/v25/game-dandy-follow.mp4',// 7: follow CTA - Dandy's World (FIX v25)
-        ];
-        const broll = bgMap[i] ?? 'bg/egg-world.mp4';
+        const broll = seg.src;
         const zoom =
           interpolate(
             frame,
@@ -1000,7 +1010,7 @@ export const Vertical: React.FC<VerticalProps> = ({
                 transform: `scale(${zoom})`,
               }}
             />
-            {[0, 3, 6].includes(i) && (
+            {[0, 6, 12].includes(i) && ( // flash di hook, RUN, jackpot
               <div
                 style={{
                   position: 'absolute',
