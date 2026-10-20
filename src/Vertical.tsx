@@ -652,7 +652,7 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
 
       {/* flash putih singkat di tiap awal caption */}
       {captions.map((cap, i) => {
-        if (i === 0) {
+        if (i === 0 || frame < cap.start * fps) {
           return null;
         }
         const o = interpolate(frame - cap.start * fps, [0, 3], [0.45, 0], {
