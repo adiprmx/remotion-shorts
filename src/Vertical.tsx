@@ -268,7 +268,7 @@ function HandText({
               color: k === full.length - 1 ? GOLD : '#ffffff',
             }}
           >
-            {ch === ' ' ? '\u00A0' : ch}
+            {ch === ' ' ? ' ' : ch}
           </span>
         ))}
       </span>
