@@ -573,7 +573,7 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
       {/* SFX hemat: pop tiap awal caption, coin di jackpot, alarm di ketahuan */}
       {captions.map((cap, i) => (
         <Sequence key={`sfx${i}`} from={Math.round(cap.start * fps)}>
-          <Audio src={staticFile('audio/sfx/pop.mp3')} volume={0.35} />
+          <Audio src={staticFile('audio/sfx/notify-pop.mp3')} volume={0.35} />
         </Sequence>
       ))}
       <Sequence from={Math.round(captions[6].start * fps)}>
