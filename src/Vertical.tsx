@@ -10,12 +10,17 @@ import {
   useVideoConfig,
   Video,
 } from 'remotion';
-import {loadFont as loadLuckiest} from '@remotion/google-fonts/LuckiestGuy';
+import {loadFont as loadMarker} from '@remotion/google-fonts/PermanentMarker';
+import {loadFont as loadCaveat} from '@remotion/google-fonts/Caveat';
 import {loadFont as loadBungee} from '@remotion/google-fonts/Bungee';
 
-const {fontFamily: LUCKIEST} = loadLuckiest('normal', {
+const {fontFamily: MARKER} = loadMarker('normal', {
   subsets: ['latin'],
   weights: ['400'],
+});
+const {fontFamily: CAVEAT} = loadCaveat('normal', {
+  subsets: ['latin'],
+  weights: ['700'],
 });
 const {fontFamily: BUNGEE} = loadBungee('normal', {
   subsets: ['latin'],
@@ -38,23 +43,26 @@ export type VerticalProps = {
   captions: Caption[];
 };
 
-// v29 ARCADE HEIST — kebalikan v28 sinematik: TERANG, RAME, SERU kayak game.
-// HUD score/combo, teks komik bounce, burst onomatopoeia, boss bar, coin rain.
-// Background tetap 16 segmen art resmi Steal An Egg (konsisten naskah).
+// v30 NYAMAR — kebalikan v29 arcade: HUMAN HANDHELD.
+// Kamera goyang halus kayak dipegang tangan (sinus frekuensi irasional, tak
+// berulang), teks tulisan tangan (Permanent Marker + coretan Caveat), transisi
+// tak seragam (wipe kiri/kanan bergantian), partikel debu & telur melayang,
+// HUD STEALTH METER naratif (bukan score/combo), SFX hemat & pelan.
+// Background: 16 segmen art resmi Steal An Egg (2 per caption, urutan nyamar).
 
 const SEG_FILES = [
   's00_hook_egg.mp4',
   's01_hook_egg2.mp4',
-  's02_langka_egg.mp4',
   's03_langka_icon.mp4',
   's04_yeti.mp4',
-  's05_yeti2.mp4',
-  's06_run.mp4',
-  's07_run2.mp4',
-  's08_panik_dragon.mp4',
-  's09_panik_dragon2.mp4',
+  's02_langka_egg.mp4',
+  's13_jackpot_egg.mp4',
   's10_wtf_yeti.mp4',
   's11_wtf_run.mp4',
+  's08_panik_dragon.mp4',
+  's09_panik_dragon2.mp4',
+  's06_run.mp4',
+  's07_run2.mp4',
   's12_jackpot.mp4',
   's13_jackpot_egg.mp4',
   's14_follow_icon.mp4',
@@ -63,172 +71,55 @@ const SEG_FILES = [
 
 const GOLD = '#FFD23F';
 const RED = '#FF4757';
-const CYAN = '#2ED3FF';
 const GREEN = '#3DFF88';
-const PURPLE = '#B388FF';
 const INK = '#141414';
 
-// kata "power" per caption (index kata) + warnanya
-const POWER: {idx: number; color: string}[] = [
-  {idx: 3, color: GOLD},
-  {idx: 3, color: PURPLE},
-  {idx: 2, color: RED},
-  {idx: 0, color: RED},
-  {idx: 2, color: RED},
-  {idx: 1, color: CYAN},
-  {idx: 2, color: GOLD},
-  {idx: 4, color: GREEN},
+// stealth meter per caption (persen) — turun saat ketahuan, pulih di akhir
+const STEALTH = [100, 92, 96, 78, 18, 38, 100, 100];
+// coretan tangan per caption (null = tanpa coretan)
+const SCRIBBLE: {text: string; color: string; rot: number}[] = [
+  {text: 'ssst...', color: '#ffd6e8', rot: -9},
+  {text: 'pelan-pelan...', color: '#ffffff', rot: 5},
+  {text: 'itu dia!', color: GOLD, rot: -6},
+  {text: 'angkut!', color: GREEN, rot: 7},
+  {text: 'eh?!', color: RED, rot: -11},
+  {text: 'CEPET!', color: GOLD, rot: 6},
+  {text: 'JACKPOT!', color: GOLD, rot: -5},
+  {text: 'gas follow!', color: '#ffffff', rot: 8},
 ];
+// pola masuk teks per caption: 0 slide, 1 pop, 2 ketik
+const ENTER = [0, 1, 2, 1, 0, 2, 1, 0];
 
-// rotasi blok teks per caption (derajat)
-const TILTS = [-2.5, 2, -1.5, 2.5, -2, 1.5, -2, 2];
-
-// target uang (score) di akhir tiap caption
-const MONEY = [150, 600, 900, 2400, 3900, 5400, 1000000, 1000000];
-
-// hash deterministik (render harus stabil antar frame)
 const hash = (n: number) => {
   const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
   return x - Math.floor(x);
 };
 
-const fmtMoney = (v: number) =>
-  Math.max(0, Math.round(v))
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-/* ---------- burst komik (bintang SVG + teks) ---------- */
-
-function Burst({
-  text,
-  color,
-  size,
-  frame,
-  startF,
-  style,
-}: {
-  text: string;
-  color: string;
-  size: number;
-  frame: number;
-  startF: number;
-  style?: React.CSSProperties;
-}) {
-  const p = interpolate(frame - startF, [0, 7], [0, 1], {
-    easing: Easing.out(Easing.back(2.2)),
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const out = interpolate(frame - startF, [26, 34], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const o = Math.min(p, out);
-  if (o <= 0) {
-    return null;
-  }
-  const pts: string[] = [];
-  const spikes = 12;
-  for (let i = 0; i < spikes * 2; i++) {
-    const r = i % 2 === 0 ? 100 : 62;
-    const a = (Math.PI * i) / spikes - Math.PI / 2;
-    pts.push(`${100 + r * Math.cos(a)},${100 + r * Math.sin(a)}`);
-  }
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        width: size,
-        height: size,
-        transform: `scale(${p}) rotate(${interpolate(p, [0, 1], [-24, 8])}deg)`,
-        opacity: o,
-        pointerEvents: 'none',
-        ...style,
-      }}
-    >
-      <svg viewBox="0 0 200 200" width={size} height={size}>
-        <polygon
-          points={pts.join(' ')}
-          fill={color}
-          stroke={INK}
-          strokeWidth={5}
-          strokeLinejoin="round"
-        />
-      </svg>
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: LUCKIEST,
-          fontSize: size * 0.21,
-          color: '#ffffff',
-          WebkitTextStroke: `2px ${INK}`,
-          textShadow: `3px 3px 0 ${INK}`,
-          transform: 'rotate(-6deg)',
-        }}
-      >
-        {text}
-      </div>
-    </div>
-  );
+// kamera handheld: goyangan tangan manusia (tak berulang, tak mekanis)
+function handheld(frame: number, seed: number) {
+  const x =
+    13 * Math.sin(frame * 0.11 + seed * 1.7) +
+    7 * Math.sin(frame * 0.031 + seed * 2.3) +
+    4 * Math.sin(frame * 0.53 + seed);
+  const y =
+    10 * Math.sin(frame * 0.083 + seed * 1.3) +
+    6 * Math.sin(frame * 0.047 + seed * 2.9) +
+    3 * Math.sin(frame * 0.41 + seed * 0.7);
+  const rot = 0.9 * Math.sin(frame * 0.05 + seed) + 0.4 * Math.sin(frame * 0.13 + seed * 1.9);
+  return {x, y, rot};
 }
 
-/* ---------- speed lines (lari / dikejar) ---------- */
+/* ---------- partikel debu (udara hidup, sepanjang video) ---------- */
 
-function SpeedLines({frame, local}: {frame: number; local: number}) {
-  const fade = interpolate(local, [0, 8], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  return (
-    <div style={{position: 'absolute', inset: 0, opacity: 0.32 * fade, pointerEvents: 'none'}}>
-      {Array.from({length: 14}).map((_, i) => {
-        const y = hash(i * 3 + 1) * 1750 + 60;
-        const w = 130 + hash(i * 7 + 2) * 240;
-        const speed = 34 + hash(i * 5 + 3) * 26;
-        const x = 1150 - ((hash(i * 11 + 4) * 1700 + frame * speed) % 1750);
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              top: y,
-              left: x,
-              width: w,
-              height: 5 + hash(i * 13) * 4,
-              background: '#ffffff',
-              borderRadius: 99,
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------- hujan koin (jackpot) ---------- */
-
-function CoinRain({frame, startF}: {frame: number; startF: number}) {
-  const local = frame - startF;
-  if (local < 0) {
-    return null;
-  }
+function Dust({frame}: {frame: number}) {
   return (
     <div style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
-      {Array.from({length: 24}).map((_, i) => {
-        const x = 40 + hash(i * 3 + 21) * 980;
-        const size = 26 + hash(i * 7 + 22) * 24;
-        const delay = hash(i * 11 + 23) * 30;
-        const dur = 62 + hash(i * 13 + 24) * 55;
-        const t = (local - delay) % dur;
-        if (local < delay) {
-          return null;
-        }
-        const y = -70 + (t / dur) * 2050;
-        const rot = (t * (2 + hash(i * 17) * 3)) % 360;
+      {Array.from({length: 18}).map((_, i) => {
+        const speed = 0.5 + hash(i * 3 + 1) * 0.9;
+        const y = 1950 - ((hash(i * 7 + 2) * 1900 + frame * speed) % 2000);
+        const x = 60 + hash(i * 11 + 3) * 940 + 22 * Math.sin(frame * 0.02 + i);
+        const size = 4 + hash(i * 5 + 4) * 7;
+        const tw = 0.35 + 0.3 * Math.sin(frame * 0.08 + i * 2.1);
         return (
           <div
             key={i}
@@ -239,28 +130,65 @@ function CoinRain({frame, startF}: {frame: number; startF: number}) {
               width: size,
               height: size,
               borderRadius: '50%',
-              background: 'radial-gradient(circle at 35% 32%, #ffe98a, #FFD23F 55%, #e0a800)',
-              border: '3px solid #8a5a00',
-              transform: `rotate(${rot}deg)`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#8a5a00',
-              fontFamily: BUNGEE,
-              fontSize: size * 0.5,
+              background: '#ffffff',
+              opacity: Math.max(0.05, tw),
             }}
-          >
-            {size > 36 ? '★' : ''}
-          </div>
+          />
         );
       })}
     </div>
   );
 }
 
-/* ---------- teks utama gaya komik ---------- */
+/* ---------- telur melayang (lintasan melengkung, cap 0 & 6) ---------- */
 
-function ComicText({
+function FloatingEggs({frame, startF, endF}: {frame: number; startF: number; endF: number}) {
+  if (frame < startF || frame >= endF) {
+    return null;
+  }
+  const local = frame - startF;
+  const dur = endF - startF;
+  return (
+    <div style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
+      {[0, 1, 2].map((k) => {
+        const delay = k * 22;
+        const t = Math.max(0, local - delay) / dur;
+        if (local < delay || t > 1) {
+          return null;
+        }
+        const x = 130 + k * 360 + 70 * Math.sin(t * Math.PI * 2 + k);
+        const y = 1750 - t * 1250;
+        const rot = -18 + t * 42 + 8 * Math.sin(t * 9 + k);
+        const s = 74 + k * 18;
+        return (
+          <div
+            key={k}
+            style={{
+              position: 'absolute',
+              left: x,
+              top: y,
+              width: s,
+              height: s * 1.25,
+              borderRadius: '50% 50% 50% 50% / 58% 58% 42% 42%',
+              background:
+                k === 1
+                  ? 'radial-gradient(circle at 35% 30%, #c9f7ff, #2ED3FF 60%, #0e7fb8)'
+                  : 'radial-gradient(circle at 35% 30%, #fff3c4, #FFD23F 60%, #e0a800)',
+              border: `3px solid ${INK}`,
+              transform: `rotate(${rot}deg)`,
+              opacity: 0.95,
+              boxShadow: '4px 6px 0 rgba(0,0,0,0.35)',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- teks tulisan tangan ---------- */
+
+function HandText({
   cap,
   index,
   frame,
@@ -271,36 +199,89 @@ function ComicText({
   frame: number;
   fps: number;
 }) {
-  const words = cap.text.split(' ');
   const startF = cap.start * fps;
   const endF = cap.end * fps;
-  const outP = interpolate(frame, [endF - 6, endF], [1, 0], {
+  if (frame < startF || frame >= endF) {
+    return null;
+  }
+  const local = frame - startF;
+  const outP = interpolate(frame, [endF - 8, endF], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
   if (outP <= 0) {
     return null;
   }
-  const power = POWER[index] ?? {idx: words.length - 1, color: GOLD};
-  const fontSize = words.length <= 3 ? 148 : words.length === 4 ? 126 : 108;
-  const chipP = interpolate(frame - startF, [0, 9], [0, 1], {
-    easing: Easing.out(Easing.back(1.8)),
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  // shake kecil khusus cap 5 (WTF) di 10 frame pertama
-  const shake =
-    index === 5 && frame - startF < 12
-      ? `translateX(${Math.sin(frame * 2.4) * 9}px) translateY(${Math.cos(frame * 3.1) * 6}px)`
-      : '';
+  const words = cap.text.split(' ');
+  const fontSize = words.length <= 3 ? 132 : words.length === 4 ? 116 : 98;
+  const mode = ENTER[index] ?? 0;
+  const scrib = SCRIBBLE[index];
+
+  const renderWord = (w: string, j: number) => {
+    const ws = 4 + j * (mode === 2 ? 6 : 9);
+    const p = interpolate(local - ws, [0, 10], [0, 1], {
+      easing: mode === 1 ? Easing.out(Easing.back(1.4)) : Easing.out(Easing.cubic),
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+    if (p <= 0) {
+      return (
+        <span key={j} style={{display: 'inline-block', opacity: 0, marginRight: 22}}>
+          {w}
+        </span>
+      );
+    }
+    // rotasi & ukuran per kata TIDAK seragam (tangan manusia tak presisi)
+    const rot = (hash(index * 31 + j * 7) - 0.5) * 6;
+    const sizeMul = 0.94 + hash(index * 17 + j * 3) * 0.12;
+    const isLast = j === words.length - 1;
+    return (
+      <span
+        key={j}
+        style={{
+          display: 'inline-block',
+          opacity: p * outP,
+          transform: `rotate(${rot}deg) scale(${interpolate(p, [0, 1], [mode === 1 ? 0.4 : 0.85, 1])}) translateY(${interpolate(p, [0, 1], [mode === 0 ? 54 : 22, 0])}px)`,
+          color: isLast ? GOLD : '#ffffff',
+          WebkitTextStroke: `2px ${INK}`,
+          textShadow: `4px 4px 0 ${INK}`,
+          marginRight: 22,
+          fontSize: fontSize * sizeMul,
+        }}
+      >
+        {w}
+      </span>
+    );
+  };
+
+  // mode ketik: tampilkan karakter bertahap (bukan kata utuh)
+  const typeBody = () => {
+    const full = cap.text;
+    const shown = Math.max(0, Math.floor((local - 4) / 2.2));
+    return (
+      <span>
+        {full.split('').map((ch, k) => (
+          <span
+            key={k}
+            style={{
+              opacity: k < shown ? outP : 0,
+              color: k === full.length - 1 ? GOLD : '#ffffff',
+            }}
+          >
+            {ch === ' ' ? '\u00A0' : ch}
+          </span>
+        ))}
+      </span>
+    );
+  };
+
   return (
     <div
       style={{
         position: 'relative',
         textAlign: 'center',
-        padding: '0 48px',
+        padding: '0 46px',
         opacity: outP,
-        transform: `rotate(${TILTS[index] ?? 0}deg) ${shake}`,
       }}
     >
       {cap.kicker ? (
@@ -308,178 +289,56 @@ function ComicText({
           style={{
             display: 'inline-block',
             fontFamily: BUNGEE,
-            fontSize: 30,
+            fontSize: 28,
             letterSpacing: 2,
-            color: '#ffffff',
-            background: '#ff6a3d',
+            color: '#141414',
+            background: '#ffffff',
             border: `3px solid ${INK}`,
-            boxShadow: `5px 5px 0 ${INK}`,
+            boxShadow: `4px 4px 0 ${INK}`,
             padding: '8px 20px 5px',
-            marginBottom: 30,
-            opacity: chipP,
-            transform: `translateY(${interpolate(chipP, [0, 1], [-26, 0])}px)`,
+            marginBottom: 26,
+            transform: `rotate(${(hash(index * 13) - 0.5) * 4}deg)`,
           }}
         >
-          STAGE {index + 1} • {cap.kicker}
+          {cap.kicker}
         </div>
       ) : null}
       <div
         style={{
-          fontFamily: LUCKIEST,
+          fontFamily: MARKER,
           fontSize,
-          lineHeight: 1.06,
-          letterSpacing: 2,
+          lineHeight: 1.18,
+          letterSpacing: 1,
           textTransform: 'uppercase',
         }}
       >
-        {words.map((w, j) => {
-          const ws = startF + 4 + j * 3;
-          const p = interpolate(frame - ws, [0, 10], [0, 1], {
-            easing: Easing.out(Easing.back(2)),
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-          if (p <= 0) {
-            return (
-              <span key={j} style={{display: 'inline-block', opacity: 0, marginRight: 24}}>
-                {w}
-              </span>
-            );
-          }
-          const isPower = j === power.idx;
-          return (
-            <span
-              key={j}
-              style={{
-                display: 'inline-block',
-                opacity: p,
-                transform: `scale(${interpolate(p, [0, 1], [0.3, isPower ? 1.14 : 1])}) translateY(${interpolate(p, [0, 1], [64, 0])}px)`,
-                color: isPower ? power.color : '#ffffff',
-                WebkitTextStroke: `3px ${INK}`,
-                textShadow: `6px 6px 0 ${INK}`,
-                marginRight: 24,
-              }}
-            >
-              {w}
-            </span>
-          );
-        })}
+        {mode === 2 ? typeBody() : words.map(renderWord)}
       </div>
-    </div>
-  );
-}
-
-/* ---------- banner peringatan boss (cap 2) ---------- */
-
-function WarningBanner({frame, startF}: {frame: number; startF: number}) {
-  const local = frame - startF;
-  if (local < 0 || local > 66) {
-    return null;
-  }
-  const blink = local % 16 < 9 ? 1 : 0.2;
-  const slide = interpolate(local, [0, 8], [-90, 0], {
-    easing: Easing.out(Easing.cubic),
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 168,
-        left: 0,
-        right: 0,
-        height: 68,
-        transform: `translateY(${slide}px)`,
-        background:
-          'repeating-linear-gradient(45deg, #FFD23F 0 26px, #141414 26px 52px)',
-        borderTop: `4px solid ${INK}`,
-        borderBottom: `4px solid ${INK}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div
-        style={{
-          fontFamily: BUNGEE,
-          fontSize: 34,
-          color: GOLD,
-          background: INK,
-          padding: '7px 26px 4px',
-          opacity: blink,
-          letterSpacing: 2,
-        }}
-      >
-        !! BOSS ALERT !!
-      </div>
-    </div>
-  );
-}
-
-/* ---------- boss bar naga (cap 4) ---------- */
-
-function BossBar({frame, startF}: {frame: number; startF: number}) {
-  const p = interpolate(frame - startF, [2, 12], [0, 1], {
-    easing: Easing.out(Easing.back(1.6)),
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  if (p <= 0) {
-    return null;
-  }
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: -168,
-        left: '50%',
-        transform: `translateX(-50%) scale(${p})`,
-        width: 600,
-        opacity: p,
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontFamily: BUNGEE,
-          fontSize: 27,
-          color: '#ffffff',
-          WebkitTextStroke: `1.5px ${INK}`,
-          textShadow: `3px 3px 0 ${INK}`,
-          marginBottom: 8,
-        }}
-      >
-        <span>NAGA COSMIC</span>
-        <span style={{color: RED}}>LV.99</span>
-      </div>
-      <div
-        style={{
-          height: 34,
-          background: '#2b2b2b',
-          border: `4px solid ${INK}`,
-          boxShadow: `5px 5px 0 rgba(0,0,0,0.55)`,
-          overflow: 'hidden',
-        }}
-      >
+      {scrib ? (
         <div
           style={{
-            height: '100%',
-            width: '94%',
-            background:
-              'repeating-linear-gradient(45deg, #FF4757 0 22px, #d63047 22px 44px)',
-            backgroundPosition: `${frame * 2}px 0`,
+            fontFamily: CAVEAT,
+            fontSize: 64,
+            color: scrib.color,
+            transform: `rotate(${scrib.rot}deg)`,
+            textShadow: '3px 3px 0 rgba(0,0,0,0.6)',
+            marginTop: 18,
+            opacity: interpolate(local, [14, 26], [0, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+            }),
           }}
-        />
-      </div>
+        >
+          {scrib.text}
+        </div>
+      ) : null}
     </div>
   );
 }
 
-/* ---------- HUD: score + combo ---------- */
+/* ---------- HUD: stealth meter naratif ---------- */
 
-function Hud({
+function StealthHud({
   frame,
   fps,
   captions,
@@ -495,76 +354,92 @@ function Hud({
     }
   }
   const cap = captions[idx];
-  const prev = idx === 0 ? 0 : MONEY[idx - 1];
-  const target = MONEY[idx] ?? prev;
-  const local = interpolate(
-    frame,
-    [cap.start * fps, cap.end * fps],
-    [0, 1],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
-  );
-  const eased = 1 - Math.pow(1 - local, 3);
-  const money = prev + (target - prev) * eased;
-  const comboPop = interpolate(frame - cap.start * fps, [0, 8], [1.65, 1], {
-    easing: Easing.out(Easing.cubic),
+  const prev = idx === 0 ? 100 : STEALTH[idx - 1];
+  const target = STEALTH[idx] ?? prev;
+  const local = interpolate(frame, [cap.start * fps, cap.end * fps], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+  const val = prev + (target - prev) * (1 - Math.pow(1 - local, 2));
+  const danger = val < 40;
+  const blink = danger && Math.floor(frame / 12) % 2 === 0;
   return (
     <div
       style={{
         position: 'absolute',
-        top: 58,
+        top: 56,
         left: 40,
         right: 40,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
       }}
     >
-      <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 32%, #ffe98a, #FFD23F 55%, #e0a800)',
-            border: '3px solid #8a5a00',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#8a5a00',
-            fontSize: 26,
-            boxShadow: '3px 3px 0 rgba(0,0,0,0.5)',
-          }}
-        >
-          ★
-        </div>
-        <div
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 10,
+        }}
+      >
+        <span
           style={{
             fontFamily: BUNGEE,
-            fontSize: 44,
+            fontSize: 30,
             color: '#ffffff',
-            WebkitTextStroke: `2px ${INK}`,
-            textShadow: `4px 4px 0 ${INK}`,
+            WebkitTextStroke: `1.5px ${INK}`,
+            textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
+            letterSpacing: 1,
           }}
         >
-          ${fmtMoney(money)}
-        </div>
+          {danger ? '!! KETAUAN !!' : 'STEALTH'}
+        </span>
+        <span
+          style={{
+            fontFamily: BUNGEE,
+            fontSize: 34,
+            color: danger ? RED : '#ffffff',
+            WebkitTextStroke: `1.5px ${INK}`,
+            textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
+            opacity: blink ? 0.35 : 1,
+          }}
+        >
+          {Math.round(val)}%
+        </span>
       </div>
       <div
         style={{
-          fontFamily: BUNGEE,
-          fontSize: 32,
-          color: '#ffffff',
-          background: RED,
+          height: 26,
+          background: 'rgba(20,20,20,0.72)',
           border: `3px solid ${INK}`,
-          boxShadow: `5px 5px 0 ${INK}`,
-          padding: '9px 18px 6px',
-          transform: `scale(${comboPop}) rotate(2deg)`,
+          borderRadius: 99,
+          overflow: 'hidden',
+          boxShadow: '3px 3px 0 rgba(0,0,0,0.4)',
         }}
       >
-        COMBO ×{idx + 1}
+        <div
+          style={{
+            height: '100%',
+            width: `${Math.max(0, Math.min(100, val))}%`,
+            background: danger
+              ? 'repeating-linear-gradient(45deg, #FF4757 0 18px, #d63047 18px 36px)'
+              : 'linear-gradient(90deg, #3DFF88, #FFD23F)',
+            borderRadius: 99,
+          }}
+        />
+      </div>
+      {/* dots misi */}
+      <div style={{display: 'flex', gap: 10, marginTop: 14}}>
+        {captions.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: '50%',
+              background: i <= idx ? GOLD : 'rgba(255,255,255,0.35)',
+              border: `2px solid ${INK}`,
+            }}
+          />
+        ))}
       </div>
     </div>
   );
@@ -590,9 +465,9 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
     }
     return d;
   })();
-  const musicVol = interpolate(duckAmount, [0, 1], [0.15, 0.055]);
+  const musicVol = interpolate(duckAmount, [0, 1], [0.12, 0.045]);
 
-  // segmen aktif (0..15): 2 per caption, split di tengah caption
+  // segmen aktif: 2 per caption, split di tengah caption
   const segs: {capIdx: number; segIdx: number; from: number; to: number}[] = [];
   captions.forEach((cap, ci) => {
     const mid = (cap.start + cap.end) / 2;
@@ -612,7 +487,7 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
 
   return (
     <AbsoluteFill style={{background: '#10131a', color: '#ffffff', overflow: 'hidden'}}>
-      {/* background: 16 segmen fast-cut, grade CERAH */}
+      {/* background: art resmi + kamera handheld organik */}
       {segs.map((seg) => {
         const fromF = seg.from * fps;
         const toF = seg.to * fps;
@@ -623,17 +498,28 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         });
-        const punch = interpolate(frame - fromF, [0, 9], [1.24, 1.07], {
-          easing: Easing.out(Easing.cubic),
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        });
-        const even = seg.segIdx % 2 === 0;
-        const cam = even
-          ? `scale(${punch + t * 0.05})`
-          : `scale(1.22) translateX(${seg.segIdx % 4 === 1 ? -40 + t * 80 : 40 - t * 80}px)`;
+        const h = handheld(frame, seg.segIdx * 3 + 1);
+        const zoom = 1.16 + t * 0.05 + 0.02 * Math.sin(frame * 0.03 + seg.segIdx);
+        // segmen kedua tiap caption masuk pakai wipe (arah bergantian)
+        const isSecond = seg.segIdx % 2 === 1;
+        const wipeDir = seg.capIdx % 2 === 0 ? -1 : 1;
+        const wipe = isSecond
+          ? interpolate(frame - fromF, [0, 9], [wipeDir * 1080, 0], {
+              easing: Easing.out(Easing.cubic),
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+            })
+          : 0;
         return (
-          <div key={`bg${seg.segIdx}`} style={{position: 'absolute', inset: -70, overflow: 'hidden'}}>
+          <div
+            key={`bg${seg.segIdx}`}
+            style={{
+              position: 'absolute',
+              inset: -80,
+              overflow: 'hidden',
+              transform: `translateX(${wipe}px)`,
+            }}
+          >
             <Video
               src={staticFile(`bg/v27/${SEG_FILES[seg.segIdx]}`)}
               muted
@@ -642,31 +528,11 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transform: cam,
-                filter: 'saturate(1.38) contrast(1.09) brightness(1.07)',
+                transform: `scale(${zoom}) translate(${h.x}px, ${h.y}px) rotate(${h.rot}deg)`,
+                filter: 'saturate(1.18) contrast(1.04) brightness(1.02)',
               }}
             />
           </div>
-        );
-      })}
-
-      {/* flash putih singkat di tiap awal caption */}
-      {captions.map((cap, i) => {
-        if (i === 0 || frame < cap.start * fps) {
-          return null;
-        }
-        const o = interpolate(frame - cap.start * fps, [0, 3], [0.45, 0], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        });
-        if (o <= 0) {
-          return null;
-        }
-        return (
-          <div
-            key={`fl${i}`}
-            style={{position: 'absolute', inset: 0, background: '#ffffff', opacity: o}}
-          />
         );
       })}
 
@@ -677,21 +543,22 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
           left: 0,
           right: 0,
           bottom: 0,
-          height: 760,
-          background: 'linear-gradient(to top, rgba(5,8,14,0.62), transparent)',
+          height: 820,
+          background: 'linear-gradient(to top, rgba(5,8,14,0.55), transparent)',
           pointerEvents: 'none',
         }}
       />
 
-      {/* speed lines saat kabur & dikejar */}
-      {activeCapIdx === 3 || activeCapIdx === 4 ? (
-        <SpeedLines frame={frame} local={frame - captions[activeCapIdx].start * fps} />
-      ) : null}
+      <Dust frame={frame} />
 
-      {/* hujan koin saat jackpot */}
-      {activeCapIdx === 6 ? (
-        <CoinRain frame={frame} startF={captions[6].start * fps} />
-      ) : null}
+      {/* telur melayang di cap 0 & 6 */}
+      {(activeCapIdx === 0 || activeCapIdx === 6) && (
+        <FloatingEggs
+          frame={frame}
+          startF={captions[activeCapIdx].start * fps}
+          endF={captions[activeCapIdx].end * fps}
+        />
+      )}
 
       {/* audio: voice */}
       {captions.map((cap, i) => (
@@ -699,247 +566,85 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
           <Audio src={staticFile(`audio/voice-${i}.mp3`)} />
         </Sequence>
       ))}
-      {/* audio: musik upbeat */}
-      <Audio src={staticFile('audio/music.mp3')} volume={musicVol} loop />
-      {/* audio: SFX arcade per caption */}
-      <Sequence from={0}>
-        <Audio src={staticFile('audio/sfx/powerup.mp3')} volume={0.55} />
-      </Sequence>
-      <Sequence from={0}>
-        <Audio src={staticFile('audio/sfx/impact-boom.mp3')} volume={0.5} />
-      </Sequence>
-      {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-        <Sequence key={`wf${i}`} from={Math.round(captions[i].start * fps)}>
-          <Audio src={staticFile('audio/sfx/whoosh-fast.mp3')} volume={0.16} />
+
+      {/* musik: tempo sedikit beda dari v29, volume pelan */}
+      <Audio src={staticFile('audio/music30.mp3')} volume={musicVol} loop />
+
+      {/* SFX hemat: pop tiap awal caption, coin di jackpot, alarm di ketahuan */}
+      {captions.map((cap, i) => (
+        <Sequence key={`sfx${i}`} from={Math.round(cap.start * fps)}>
+          <Audio src={staticFile('audio/sfx/pop.mp3')} volume={0.35} />
         </Sequence>
       ))}
-      <Sequence from={Math.round(captions[1].start * fps) + 6}>
+      <Sequence from={Math.round(captions[6].start * fps)}>
         <Audio src={staticFile('audio/sfx/coin.mp3')} volume={0.6} />
       </Sequence>
-      <Sequence from={Math.round(captions[2].start * fps)}>
-        <Audio src={staticFile('audio/sfx/alarm.mp3')} volume={0.55} />
-      </Sequence>
-      <Sequence from={Math.round(captions[2].start * fps)}>
-        <Audio src={staticFile('audio/sfx/impact-deep.mp3')} volume={0.5} />
-      </Sequence>
-      <Sequence from={Math.round(captions[3].start * fps)}>
-        <Audio src={staticFile('audio/sfx/jump.mp3')} volume={0.6} />
-      </Sequence>
-      <Sequence from={Math.round(captions[3].start * fps) + 3}>
-        <Audio src={staticFile('audio/sfx/whoosh-rocket.mp3')} volume={0.4} />
-      </Sequence>
       <Sequence from={Math.round(captions[4].start * fps)}>
-        <Audio src={staticFile('audio/sfx/alarm.mp3')} volume={0.45} />
+        <Audio src={staticFile('audio/sfx/alarm.mp3')} volume={0.4} />
       </Sequence>
-      <Sequence from={Math.round(captions[4].start * fps)}>
-        <Audio src={staticFile('audio/sfx/impact-deep.mp3')} volume={0.45} />
-      </Sequence>
-      <Sequence from={Math.round(captions[5].start * fps)}>
-        <Audio src={staticFile('audio/sfx/notify-pop.mp3')} volume={0.6} />
-      </Sequence>
-      <Sequence from={Math.round(captions[6].start * fps)}>
-        <Audio src={staticFile('audio/sfx/fanfare.mp3')} volume={0.6} />
-      </Sequence>
-      {[3, 16, 29].map((off, k) => (
-        <Sequence key={`cn${k}`} from={Math.round(captions[6].start * fps) + off}>
-          <Audio src={staticFile('audio/sfx/coin.mp3')} volume={0.6} />
-        </Sequence>
+
+      {/* teks per caption (guard frame < start di dalam HandText) */}
+      {captions.map((cap, i) => (
+        <div
+          key={`t${i}`}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 210,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <HandText cap={cap} index={i} frame={frame} fps={fps} />
+        </div>
       ))}
-      {[34, 43, 52].map((off, k) => (
-        <Sequence key={`dg${k}`} from={Math.round(captions[6].start * fps) + off}>
-          <Audio src={staticFile('audio/sfx/notify-ding.mp3')} volume={0.45} />
-        </Sequence>
-      ))}
-      <Sequence from={Math.round(captions[7].start * fps)}>
-        <Audio src={staticFile('audio/sfx/powerup.mp3')} volume={0.5} />
-      </Sequence>
 
-      {/* HUD */}
-      <Hud frame={frame} fps={fps} captions={captions} />
+      <StealthHud frame={frame} fps={fps} captions={captions} />
 
-      {/* banner peringatan boss */}
-      <WarningBanner frame={frame} startF={captions[2].start * fps} />
-
-      {/* banner MISSION START (cap 0) */}
-      {frame < 54
-        ? (() => {
-            const p = interpolate(frame, [2, 11], [0, 1], {
-              easing: Easing.out(Easing.back(2)),
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            });
-            const o = interpolate(frame, [44, 54], [1, 0], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            });
-            return (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 330,
-                  left: 0,
-                  right: 0,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  opacity: o,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: BUNGEE,
-                    fontSize: 54,
-                    color: INK,
-                    background: GOLD,
-                    border: `5px solid ${INK}`,
-                    boxShadow: `9px 9px 0 ${INK}`,
-                    padding: '16px 38px 12px',
-                    transform: `scale(${p}) rotate(-3deg)`,
-                  }}
-                >
-                  ★ MISSION START ★
-                </div>
-              </div>
-            );
-          })()
-        : null}
-
-      {/* teks utama + elemen per-caption */}
-      {captions.map((cap, i) => {
-        const startF = cap.start * fps;
-        const endF = cap.end * fps;
-        if (frame < startF || frame >= endF) {
-          return null;
-        }
-        return (
-          <div
-            key={`t${i}`}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 330,
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <div style={{position: 'relative'}}>
-              {i === 4 ? <BossBar frame={frame} startF={startF} /> : null}
-              <ComicText cap={cap} index={i} frame={frame} fps={fps} />
-              {i === 0 ? (
-                <Burst text="BOOM!" color={RED} size={235} frame={frame} startF={startF + 8} style={{top: -215, right: -105}} />
-              ) : null}
-              {i === 1 ? (
-                <Burst text="RARE!" color={PURPLE} size={215} frame={frame} startF={startF + 8} style={{top: -205, left: -95}} />
-              ) : null}
-              {i === 3 ? (
-                <Burst text="WOOSH!" color={CYAN} size={225} frame={frame} startF={startF + 5} style={{top: -210, right: -100}} />
-              ) : null}
-              {i === 5 ? (
-                <Burst text="CLOSE!!" color="#ff6a3d" size={225} frame={frame} startF={startF + 8} style={{top: -210, left: -100}} />
-              ) : null}
-              {i === 6 ? (
-                <Burst text="JACKPOT!" color={GOLD} size={300} frame={frame} startF={startF + 10} style={{top: -300, right: -60}} />
-              ) : null}
-              {i === 7 ? (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: -215,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: BUNGEE,
-                      fontSize: 43,
-                      color: INK,
-                      background: GREEN,
-                      border: `5px solid ${INK}`,
-                      boxShadow: `8px 8px 0 ${INK}`,
-                      padding: '13px 30px 10px',
-                      transform: `scale(${interpolate(frame - startF, [14, 23], [0, 1], {
-                        easing: Easing.out(Easing.back(2)),
-                        extrapolateLeft: 'clamp',
-                        extrapolateRight: 'clamp',
-                      })}) rotate(-2deg)`,
-                    }}
-                  >
-                    ★ MISSION COMPLETE ★
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* ajakan follow berkedip (cap 7) */}
-      {activeCapIdx === 7
-        ? (() => {
-            const local = frame - captions[7].start * fps;
-            const blink = local < 24 || local % 34 < 19 ? 1 : 0.15;
-            return (
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 208,
-                  left: 0,
-                  right: 0,
-                  textAlign: 'center',
-                  fontFamily: BUNGEE,
-                  fontSize: 35,
-                  color: GOLD,
-                  WebkitTextStroke: `2px ${INK}`,
-                  textShadow: `4px 4px 0 ${INK}`,
-                  opacity: blink,
-                }}
-              >
-                {'>> FOLLOW = NEXT MISSION >>'}
-              </div>
-            );
-          })()
-        : null}
-
-      {/* tag pemain */}
+      {/* handle + progress tipis */}
       <div
         style={{
           position: 'absolute',
-          left: 40,
-          bottom: 42,
+          bottom: 52,
+          left: 0,
+          right: 0,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: 10,
-          fontFamily: BUNGEE,
-          fontSize: 25,
+          gap: 14,
         }}
       >
-        <span
-          style={{
-            background: accent,
-            color: '#ffffff',
-            border: `3px solid ${INK}`,
-            padding: '4px 10px 2px',
-            boxShadow: `4px 4px 0 ${INK}`,
-          }}
-        >
-          P1
-        </span>
-        <span style={{color: '#ffffff', WebkitTextStroke: `1.5px ${INK}`, textShadow: `3px 3px 0 ${INK}`}}>
-          {handle}
-        </span>
-      </div>
-
-      {/* progress bar level */}
-      <div style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 13, background: 'rgba(0,0,0,0.5)'}}>
         <div
           style={{
-            height: '100%',
-            width: `${(frame / durationInFrames) * 100}%`,
-            background: `linear-gradient(90deg, ${GOLD}, ${accent})`,
+            fontFamily: BUNGEE,
+            fontSize: 30,
+            color: '#ffffff',
+            WebkitTextStroke: `1.5px ${INK}`,
+            textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
+            letterSpacing: 1,
           }}
-        />
+        >
+          {handle}
+        </div>
+        <div
+          style={{
+            width: 640,
+            height: 8,
+            background: 'rgba(255,255,255,0.28)',
+            borderRadius: 99,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${(frame / durationInFrames) * 100}%`,
+              background: accent,
+              borderRadius: 99,
+            }}
+          />
+        </div>
       </div>
     </AbsoluteFill>
   );
