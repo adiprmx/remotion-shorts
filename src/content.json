@@ -2,72 +2,72 @@
  "accent": "#ffd23f",
  "captions": [
   {
-   "end": 3.7,
+   "end": 2.81,
    "kicker": "HOOK",
-   "speak_text": "gue nyamar jadi telur!",
+   "speak_text": "telur satu miliar muncul!",
    "start": 0.0,
-   "text": "GUE NYAMAR JADI TELUR!",
-   "visual": "disguise"
+   "text": "TELUR 1 MILIAR MUNCUL!",
+   "visual": "hook"
   },
   {
-   "end": 6.59,
-   "kicker": "MASUK",
-   "speak_text": "kandang sultan, no curiga!",
-   "start": 4.25,
-   "text": "Kandang sultan, no curiga!",
-   "visual": "sneak"
+   "end": 5.04,
+   "kicker": "REBUTAN",
+   "speak_text": "semua orang ngincer!",
+   "start": 3.16,
+   "text": "SEMUA ORANG NGINCER!",
+   "visual": "crowd"
   },
   {
-   "end": 10.27,
-   "kicker": "INCER",
-   "speak_text": "telur langka di depan mata!",
-   "start": 6.99,
-   "text": "Telur langka di depan mata!",
-   "visual": "target"
+   "end": 7.38,
+   "kicker": "GAS",
+   "speak_text": "gue paling depan!",
+   "start": 5.34,
+   "text": "GUE PALING DEPAN!",
+   "visual": "front"
   },
   {
-   "end": 15.32,
+   "end": 9.94,
+   "kicker": "HALANGAN",
+   "speak_text": "sultan halangin jalan!",
+   "start": 7.68,
+   "text": "SULTAN HALANGIN JALAN!",
+   "visual": "block"
+  },
+  {
+   "end": 12.74,
+   "kicker": "LOMPAT",
+   "speak_text": "gue lompatin pagarnya!",
+   "start": 10.29,
+   "text": "GUE LOMPATIN PAGARNYA!",
+   "visual": "jump"
+  },
+  {
+   "end": 15.16,
    "kicker": "SIKAT",
-   "speak_text": "sikat! telur gue angkut!",
-   "start": 10.77,
-   "text": "Sikat! Telur gue angkut!",
+   "speak_text": "dapet! langsung kabur!",
+   "start": 13.04,
+   "text": "DAPET! LANGSUNG KABUR!",
    "visual": "grab"
   },
   {
-   "end": 21.58,
-   "kicker": "KETAUAN",
-   "speak_text": "eh?! kok gue dikejar?!",
-   "start": 15.92,
-   "text": "Eh?! Kok gue dikejar?!",
-   "visual": "caught"
+   "end": 18.39,
+   "kicker": "LOLOS",
+   "speak_text": "yang ngejar pada jatoh!",
+   "start": 15.46,
+   "text": "YANG NGEJAR PADA JATOH!",
+   "visual": "escape"
   },
   {
-   "end": 26.49,
-   "kicker": "KABUR",
-   "speak_text": "lari! jangan sampe ketangkep!",
-   "start": 21.98,
-   "text": "Lari! Jangan sampe ketangkep!",
-   "visual": "run"
-  },
-  {
-   "end": 28.63,
-   "kicker": "JACKPOT",
-   "speak_text": "tetesin... dapet legendaris!",
-   "start": 26.94,
-   "text": "Tetesin... DAPET LEGENDARIS!",
-   "visual": "hatch"
-  },
-  {
-   "end": 34.56,
+   "end": 23.12,
    "kicker": "FOLLOW",
-   "speak_text": "follow buat misi nyamar berikutnya!",
-   "start": 28.98,
-   "text": "Follow buat misi nyamar berikutnya!",
+   "speak_text": "follow buat jackpot berikutnya!",
+   "start": 18.74,
+   "text": "FOLLOW BUAT JACKPOT BERIKUTNYA!",
    "visual": "cta"
   }
  ],
- "durationSec": 34.56,
+ "durationSec": 23.12,
  "handle": "@adiprmx",
- "title": "GUE NYAMAR JADI TELUR!",
- "titleHighlight": "NYAMAR JADI TELUR!"
+ "title": "TELUR 1 MILIAR, GUE SIKAT!",
+ "titleHighlight": "1 MILIAR"
 }
