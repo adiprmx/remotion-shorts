@@ -10,17 +10,13 @@ import {
   useVideoConfig,
   Video,
 } from 'remotion';
-import {loadFont as loadMarker} from '@remotion/google-fonts/PermanentMarker';
-import {loadFont as loadCaveat} from '@remotion/google-fonts/Caveat';
+import {loadFont as loadAnton} from '@remotion/google-fonts/Anton';
 import {loadFont as loadBungee} from '@remotion/google-fonts/Bungee';
+import wordTimingsRaw from './word-timings.json';
 
-const {fontFamily: MARKER} = loadMarker('normal', {
+const {fontFamily: ANTON} = loadAnton('normal', {
   subsets: ['latin'],
   weights: ['400'],
-});
-const {fontFamily: CAVEAT} = loadCaveat('normal', {
-  subsets: ['latin'],
-  weights: ['700'],
 });
 const {fontFamily: BUNGEE} = loadBungee('normal', {
   subsets: ['latin'],
@@ -43,12 +39,12 @@ export type VerticalProps = {
   captions: Caption[];
 };
 
-// v30 NYAMAR — kebalikan v29 arcade: HUMAN HANDHELD.
-// Kamera goyang halus kayak dipegang tangan (sinus frekuensi irasional, tak
-// berulang), teks tulisan tangan (Permanent Marker + coretan Caveat), transisi
-// tak seragam (wipe kiri/kanan bergantian), partikel debu & telur melayang,
-// HUD STEALTH METER naratif (bukan score/combo), SFX hemat & pelan.
-// Background: 16 segmen art resmi Steal An Egg (2 per caption, urutan nyamar).
+// v31 VIRAL NATIVE — kebalikan total v30 handheld:
+// Format TikTok viral yang "normal": caption Anton tebal putih + outline hitam,
+// kata-per-kata nyala kuning (karaoke, ikut timing kata beneran), hard cut tanpa
+// wipe, punch zoom tiap caption, tanpa coretan tangan / telur melayang / HUD /
+// debu / goyang kamera. Background: 16 segmen art resmi Steal An Egg, 2 per
+// caption berurutan, Ken Burns pelan (bukan handheld).
 
 const SEG_FILES = [
   's00_hook_egg.mp4',
@@ -70,125 +66,17 @@ const SEG_FILES = [
 ];
 
 const GOLD = '#FFD23F';
-const RED = '#FF4757';
-const GREEN = '#3DFF88';
-const INK = '#141414';
+const INK = '#000000';
 
-// stealth meter per caption (persen) — turun saat ketahuan, pulih di akhir
-const STEALTH = [100, 92, 96, 78, 18, 38, 100, 100];
-// coretan tangan per caption (null = tanpa coretan)
-const SCRIBBLE: {text: string; color: string; rot: number}[] = [
-  {text: 'ssst...', color: '#ffd6e8', rot: -9},
-  {text: 'pelan-pelan...', color: '#ffffff', rot: 5},
-  {text: 'itu dia!', color: GOLD, rot: -6},
-  {text: 'angkut!', color: GREEN, rot: 7},
-  {text: 'eh?!', color: RED, rot: -11},
-  {text: 'CEPET!', color: GOLD, rot: 6},
-  {text: 'JACKPOT!', color: GOLD, rot: -5},
-  {text: 'gas follow!', color: '#ffffff', rot: 8},
-];
-// pola masuk teks per caption: 0 slide, 1 pop, 2 ketik
-const ENTER = [0, 1, 2, 1, 0, 2, 1, 0];
+type WordTiming = {w: string; s: number; e: number};
+const WORD_TIMINGS: Record<string, WordTiming[]> = wordTimingsRaw as Record<
+  string,
+  WordTiming[]
+>;
 
-const hash = (n: number) => {
-  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-};
+/* ---------- caption viral: Anton + karaoke per kata ---------- */
 
-// kamera handheld: goyangan tangan manusia (tak berulang, tak mekanis)
-function handheld(frame: number, seed: number) {
-  const x =
-    13 * Math.sin(frame * 0.11 + seed * 1.7) +
-    7 * Math.sin(frame * 0.031 + seed * 2.3) +
-    4 * Math.sin(frame * 0.53 + seed);
-  const y =
-    10 * Math.sin(frame * 0.083 + seed * 1.3) +
-    6 * Math.sin(frame * 0.047 + seed * 2.9) +
-    3 * Math.sin(frame * 0.41 + seed * 0.7);
-  const rot = 0.9 * Math.sin(frame * 0.05 + seed) + 0.4 * Math.sin(frame * 0.13 + seed * 1.9);
-  return {x, y, rot};
-}
-
-/* ---------- partikel debu (udara hidup, sepanjang video) ---------- */
-
-function Dust({frame}: {frame: number}) {
-  return (
-    <div style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
-      {Array.from({length: 18}).map((_, i) => {
-        const speed = 0.5 + hash(i * 3 + 1) * 0.9;
-        const y = 1950 - ((hash(i * 7 + 2) * 1900 + frame * speed) % 2000);
-        const x = 60 + hash(i * 11 + 3) * 940 + 22 * Math.sin(frame * 0.02 + i);
-        const size = 4 + hash(i * 5 + 4) * 7;
-        const tw = 0.35 + 0.3 * Math.sin(frame * 0.08 + i * 2.1);
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: x,
-              top: y,
-              width: size,
-              height: size,
-              borderRadius: '50%',
-              background: '#ffffff',
-              opacity: Math.max(0.05, tw),
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------- telur melayang (lintasan melengkung, cap 0 & 6) ---------- */
-
-function FloatingEggs({frame, startF, endF}: {frame: number; startF: number; endF: number}) {
-  if (frame < startF || frame >= endF) {
-    return null;
-  }
-  const local = frame - startF;
-  const dur = endF - startF;
-  return (
-    <div style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
-      {[0, 1, 2].map((k) => {
-        const delay = k * 22;
-        const t = Math.max(0, local - delay) / dur;
-        if (local < delay || t > 1) {
-          return null;
-        }
-        const x = 130 + k * 360 + 70 * Math.sin(t * Math.PI * 2 + k);
-        const y = 1750 - t * 1250;
-        const rot = -18 + t * 42 + 8 * Math.sin(t * 9 + k);
-        const s = 74 + k * 18;
-        return (
-          <div
-            key={k}
-            style={{
-              position: 'absolute',
-              left: x,
-              top: y,
-              width: s,
-              height: s * 1.25,
-              borderRadius: '50% 50% 50% 50% / 58% 58% 42% 42%',
-              background:
-                k === 1
-                  ? 'radial-gradient(circle at 35% 30%, #c9f7ff, #2ED3FF 60%, #0e7fb8)'
-                  : 'radial-gradient(circle at 35% 30%, #fff3c4, #FFD23F 60%, #e0a800)',
-              border: `3px solid ${INK}`,
-              transform: `rotate(${rot}deg)`,
-              opacity: 0.95,
-              boxShadow: '4px 6px 0 rgba(0,0,0,0.35)',
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------- teks tulisan tangan ---------- */
-
-function HandText({
+function ViralText({
   cap,
   index,
   frame,
@@ -205,7 +93,8 @@ function HandText({
     return null;
   }
   const local = frame - startF;
-  const outP = interpolate(frame, [endF - 8, endF], [1, 0], {
+  const timeSec = frame / fps;
+  const outP = interpolate(frame, [endF - 6, endF], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -213,75 +102,33 @@ function HandText({
     return null;
   }
   const words = cap.text.split(' ');
-  const fontSize = words.length <= 3 ? 132 : words.length === 4 ? 116 : 98;
-  const mode = ENTER[index] ?? 0;
-  const scrib = SCRIBBLE[index];
-
-  const renderWord = (w: string, j: number) => {
-    const ws = 4 + j * (mode === 2 ? 6 : 9);
-    const p = interpolate(local - ws, [0, 10], [0, 1], {
-      easing: mode === 1 ? Easing.out(Easing.back(1.4)) : Easing.out(Easing.cubic),
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    });
-    if (p <= 0) {
-      return (
-        <span key={j} style={{display: 'inline-block', opacity: 0, marginRight: 22}}>
-          {w}
-        </span>
-      );
+  const fontSize = words.length <= 3 ? 122 : words.length === 4 ? 106 : 90;
+  const timings = WORD_TIMINGS[String(index)] ?? [];
+  // kata aktif = kata yang waktunya mengandung detik ini (karaoke beneran)
+  let active = -1;
+  timings.forEach((wt, j) => {
+    if (timeSec >= wt.s && timeSec < wt.e) {
+      active = j;
     }
-    // rotasi & ukuran per kata TIDAK seragam (tangan manusia tak presisi)
-    const rot = (hash(index * 31 + j * 7) - 0.5) * 6;
-    const sizeMul = 0.94 + hash(index * 17 + j * 3) * 0.12;
-    const isLast = j === words.length - 1;
-    return (
-      <span
-        key={j}
-        style={{
-          display: 'inline-block',
-          opacity: p * outP,
-          transform: `rotate(${rot}deg) scale(${interpolate(p, [0, 1], [mode === 1 ? 0.4 : 0.85, 1])}) translateY(${interpolate(p, [0, 1], [mode === 0 ? 54 : 22, 0])}px)`,
-          color: isLast ? GOLD : '#ffffff',
-          WebkitTextStroke: `2px ${INK}`,
-          textShadow: `4px 4px 0 ${INK}`,
-          marginRight: 22,
-          fontSize: fontSize * sizeMul,
-        }}
-      >
-        {w}
-      </span>
-    );
-  };
-
-  // mode ketik: tampilkan karakter bertahap (bukan kata utuh)
-  const typeBody = () => {
-    const full = cap.text;
-    const shown = Math.max(0, Math.floor((local - 4) / 2.2));
-    return (
-      <span>
-        {full.split('').map((ch, k) => (
-          <span
-            key={k}
-            style={{
-              opacity: k < shown ? outP : 0,
-              color: k === full.length - 1 ? GOLD : '#ffffff',
-            }}
-          >
-            {ch === ' ' ? ' ' : ch}
-          </span>
-        ))}
-      </span>
-    );
-  };
+  });
+  if (active === -1 && timings.length > 0) {
+    active = timeSec < timings[0].s ? 0 : timings.length - 1;
+  }
+  // masuk bersih & profesional: naik halus + fade, tanpa bounce/rotasi acak
+  const rise = interpolate(local, [0, 8], [16, 0], {
+    easing: Easing.out(Easing.cubic),
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
 
   return (
     <div
       style={{
         position: 'relative',
         textAlign: 'center',
-        padding: '0 46px',
+        padding: '0 40px',
         opacity: outP,
+        transform: `translateY(${rise}px)`,
       }}
     >
       {cap.kicker ? (
@@ -289,15 +136,13 @@ function HandText({
           style={{
             display: 'inline-block',
             fontFamily: BUNGEE,
-            fontSize: 28,
-            letterSpacing: 2,
+            fontSize: 24,
+            letterSpacing: 3,
             color: '#141414',
-            background: '#ffffff',
-            border: `3px solid ${INK}`,
-            boxShadow: `4px 4px 0 ${INK}`,
-            padding: '8px 20px 5px',
-            marginBottom: 26,
-            transform: `rotate(${(hash(index * 13) - 0.5) * 4}deg)`,
+            background: GOLD,
+            borderRadius: 4,
+            padding: '8px 18px 6px',
+            marginBottom: 24,
           }}
         >
           {cap.kicker}
@@ -305,141 +150,37 @@ function HandText({
       ) : null}
       <div
         style={{
-          fontFamily: MARKER,
+          fontFamily: ANTON,
           fontSize,
-          lineHeight: 1.18,
+          lineHeight: 1.08,
           letterSpacing: 1,
           textTransform: 'uppercase',
         }}
       >
-        {mode === 2 ? typeBody() : words.map(renderWord)}
-      </div>
-      {scrib ? (
-        <div
-          style={{
-            fontFamily: CAVEAT,
-            fontSize: 64,
-            color: scrib.color,
-            transform: `rotate(${scrib.rot}deg)`,
-            textShadow: '3px 3px 0 rgba(0,0,0,0.6)',
-            marginTop: 18,
-            opacity: interpolate(local, [14, 26], [0, 1], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            }),
-          }}
-        >
-          {scrib.text}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-/* ---------- HUD: stealth meter naratif ---------- */
-
-function StealthHud({
-  frame,
-  fps,
-  captions,
-}: {
-  frame: number;
-  fps: number;
-  captions: Caption[];
-}) {
-  let idx = 0;
-  for (let i = 0; i < captions.length; i++) {
-    if (frame >= captions[i].start * fps) {
-      idx = i;
-    }
-  }
-  const cap = captions[idx];
-  const prev = idx === 0 ? 100 : STEALTH[idx - 1];
-  const target = STEALTH[idx] ?? prev;
-  const local = interpolate(frame, [cap.start * fps, cap.end * fps], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const val = prev + (target - prev) * (1 - Math.pow(1 - local, 2));
-  const danger = val < 40;
-  const blink = danger && Math.floor(frame / 12) % 2 === 0;
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 56,
-        left: 40,
-        right: 40,
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 10,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: BUNGEE,
-            fontSize: 30,
-            color: '#ffffff',
-            WebkitTextStroke: `1.5px ${INK}`,
-            textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
-            letterSpacing: 1,
-          }}
-        >
-          {danger ? '!! KETAUAN !!' : 'STEALTH'}
-        </span>
-        <span
-          style={{
-            fontFamily: BUNGEE,
-            fontSize: 34,
-            color: danger ? RED : '#ffffff',
-            WebkitTextStroke: `1.5px ${INK}`,
-            textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
-            opacity: blink ? 0.35 : 1,
-          }}
-        >
-          {Math.round(val)}%
-        </span>
-      </div>
-      <div
-        style={{
-          height: 26,
-          background: 'rgba(20,20,20,0.72)',
-          border: `3px solid ${INK}`,
-          borderRadius: 99,
-          overflow: 'hidden',
-          boxShadow: '3px 3px 0 rgba(0,0,0,0.4)',
-        }}
-      >
-        <div
-          style={{
-            height: '100%',
-            width: `${Math.max(0, Math.min(100, val))}%`,
-            background: danger
-              ? 'repeating-linear-gradient(45deg, #FF4757 0 18px, #d63047 18px 36px)'
-              : 'linear-gradient(90deg, #3DFF88, #FFD23F)',
-            borderRadius: 99,
-          }}
-        />
-      </div>
-      {/* dots misi */}
-      <div style={{display: 'flex', gap: 10, marginTop: 14}}>
-        {captions.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: '50%',
-              background: i <= idx ? GOLD : 'rgba(255,255,255,0.35)',
-              border: `2px solid ${INK}`,
-            }}
-          />
-        ))}
+        {words.map((w, j) => {
+          // masuk per kata: naik halus + fade (expo), tanpa scale/rotasi
+          const wp = interpolate(local - j * 4, [0, 7], [0, 1], {
+            easing: Easing.out(Easing.cubic),
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          });
+          const isActive = j === active;
+          return (
+            <span
+              key={j}
+              style={{
+                display: 'inline-block',
+                opacity: wp * outP,
+                transform: `translateY(${interpolate(wp, [0, 1], [14, 0])}px)`,
+                color: isActive ? GOLD : '#ffffff',
+                textShadow: '0 2px 16px rgba(0,0,0,0.65)',
+                marginRight: 20,
+              }}
+            >
+              {w}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
@@ -467,7 +208,7 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
   })();
   const musicVol = interpolate(duckAmount, [0, 1], [0.12, 0.045]);
 
-  // segmen aktif: 2 per caption, split di tengah caption
+  // segmen aktif: 2 per caption berurutan, split di tengah caption, HARD CUT
   const segs: {capIdx: number; segIdx: number; from: number; to: number}[] = [];
   captions.forEach((cap, ci) => {
     const mid = (cap.start + cap.end) / 2;
@@ -475,19 +216,9 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
     segs.push({capIdx: ci, segIdx: ci * 2 + 1, from: mid, to: cap.end});
   });
 
-  const activeCapIdx = (() => {
-    let idx = 0;
-    captions.forEach((cap, i) => {
-      if (frame >= cap.start * fps) {
-        idx = i;
-      }
-    });
-    return idx;
-  })();
-
   return (
     <AbsoluteFill style={{background: '#10131a', color: '#ffffff', overflow: 'hidden'}}>
-      {/* background: art resmi + kamera handheld organik */}
+      {/* background: art resmi, Ken Burns pelan, hard cut */}
       {segs.map((seg) => {
         const fromF = seg.from * fps;
         const toF = seg.to * fps;
@@ -498,27 +229,11 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         });
-        const h = handheld(frame, seg.segIdx * 3 + 1);
-        const zoom = 1.16 + t * 0.05 + 0.02 * Math.sin(frame * 0.03 + seg.segIdx);
-        // segmen kedua tiap caption masuk pakai wipe (arah bergantian)
-        const isSecond = seg.segIdx % 2 === 1;
-        const wipeDir = seg.capIdx % 2 === 0 ? -1 : 1;
-        const wipe = isSecond
-          ? interpolate(frame - fromF, [0, 9], [wipeDir * 1080, 0], {
-              easing: Easing.out(Easing.cubic),
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            })
-          : 0;
+        const zoom = 1.08 + t * 0.1;
         return (
           <div
             key={`bg${seg.segIdx}`}
-            style={{
-              position: 'absolute',
-              inset: -80,
-              overflow: 'hidden',
-              transform: `translateX(${wipe}px)`,
-            }}
+            style={{position: 'absolute', inset: -60, overflow: 'hidden'}}
           >
             <Video
               src={staticFile(`bg/v27/${SEG_FILES[seg.segIdx]}`)}
@@ -528,7 +243,7 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transform: `scale(${zoom}) translate(${h.x}px, ${h.y}px) rotate(${h.rot}deg)`,
+                transform: `scale(${zoom})`,
                 filter: 'saturate(1.18) contrast(1.04) brightness(1.02)',
               }}
             />
@@ -536,29 +251,18 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
         );
       })}
 
-      {/* gradasi bawah tipis buat keterbacaan teks */}
+      {/* gradasi bawah buat keterbacaan teks */}
       <div
         style={{
           position: 'absolute',
           left: 0,
           right: 0,
           bottom: 0,
-          height: 820,
-          background: 'linear-gradient(to top, rgba(5,8,14,0.55), transparent)',
+          height: 760,
+          background: 'linear-gradient(to top, rgba(5,8,14,0.72), transparent)',
           pointerEvents: 'none',
         }}
       />
-
-      <Dust frame={frame} />
-
-      {/* telur melayang di cap 0 & 6 */}
-      {(activeCapIdx === 0 || activeCapIdx === 6) && (
-        <FloatingEggs
-          frame={frame}
-          startF={captions[activeCapIdx].start * fps}
-          endF={captions[activeCapIdx].end * fps}
-        />
-      )}
 
       {/* audio: voice */}
       {captions.map((cap, i) => (
@@ -567,23 +271,23 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
         </Sequence>
       ))}
 
-      {/* musik: tempo sedikit beda dari v29, volume pelan */}
-      <Audio src={staticFile('audio/music30.mp3')} volume={musicVol} loop />
+      {/* musik upbeat orisinal, volume pelan saat voice */}
+      <Audio src={staticFile('audio/music.mp3')} volume={musicVol} loop />
 
-      {/* SFX hemat: pop tiap awal caption, coin di jackpot, alarm di ketahuan */}
+      {/* SFX punchy: pop tiap awal caption, boom di halangan, coin di sikat */}
       {captions.map((cap, i) => (
         <Sequence key={`sfx${i}`} from={Math.round(cap.start * fps)}>
-          <Audio src={staticFile('audio/sfx/notify-pop.mp3')} volume={0.35} />
+          <Audio src={staticFile('audio/sfx/notify-pop.mp3')} volume={0.3} />
         </Sequence>
       ))}
-      <Sequence from={Math.round(captions[6].start * fps)}>
+      <Sequence from={Math.round(captions[3].start * fps)}>
+        <Audio src={staticFile('audio/sfx/impact-boom.mp3')} volume={0.5} />
+      </Sequence>
+      <Sequence from={Math.round(captions[5].start * fps)}>
         <Audio src={staticFile('audio/sfx/coin.mp3')} volume={0.6} />
       </Sequence>
-      <Sequence from={Math.round(captions[4].start * fps)}>
-        <Audio src={staticFile('audio/sfx/alarm.mp3')} volume={0.4} />
-      </Sequence>
 
-      {/* teks per caption (guard frame < start di dalam HandText) */}
+      {/* teks per caption (guard frame < start di dalam ViralText) */}
       {captions.map((cap, i) => (
         <div
           key={`t${i}`}
@@ -591,34 +295,33 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
             position: 'absolute',
             left: 0,
             right: 0,
-            bottom: 210,
+            bottom: 230,
             display: 'flex',
             justifyContent: 'center',
           }}
         >
-          <HandText cap={cap} index={i} frame={frame} fps={fps} />
+          <ViralText cap={cap} index={i} frame={frame} fps={fps} />
         </div>
       ))}
 
-      <StealthHud frame={frame} fps={fps} captions={captions} />
-
-      {/* handle + progress tipis */}
+      {/* handle + progress full-width */}
       <div
         style={{
           position: 'absolute',
-          bottom: 52,
+          bottom: 0,
           left: 0,
           right: 0,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: 14,
+          paddingBottom: 34,
         }}
       >
         <div
           style={{
             fontFamily: BUNGEE,
-            fontSize: 30,
+            fontSize: 28,
             color: '#ffffff',
             WebkitTextStroke: `1.5px ${INK}`,
             textShadow: '3px 3px 0 rgba(0,0,0,0.55)',
@@ -629,10 +332,9 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
         </div>
         <div
           style={{
-            width: 640,
-            height: 8,
+            width: '100%',
+            height: 6,
             background: 'rgba(255,255,255,0.28)',
-            borderRadius: 99,
             overflow: 'hidden',
           }}
         >
@@ -641,7 +343,6 @@ export const Vertical: React.FC<VerticalProps> = ({accent, captions, handle}) =>
               height: '100%',
               width: `${(frame / durationInFrames) * 100}%`,
               background: accent,
-              borderRadius: 99,
             }}
           />
         </div>
