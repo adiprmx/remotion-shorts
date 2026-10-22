@@ -15,7 +15,7 @@ jobs:
           python-version: '3.12'
       - run: pip install edge-tts
       - name: Generate sample
-        run: edge-tts --voice id-ID-ArdiNeural --text "${{ inputs.text }}" --file sample.mp3
+        run: edge-tts --voice id-ID-ArdiNeural --text "${{ inputs.text }}" --write-media sample.mp3
       - uses: actions/upload-artifact@v4
         with:
           name: edge-sample
