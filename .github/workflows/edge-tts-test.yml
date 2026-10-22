@@ -1,0 +1,22 @@
+name: edge-tts-test
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: 'Kalimat untuk diucapkan'
+        required: false
+        default: 'Telur satu miliar muncul!'
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - name: Generate sample
+        run: edge-tts --voice id-ID-ArdiNeural --text "${{ inputs.text }}" --file sample.mp3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edge-sample
+          path: sample.mp3
